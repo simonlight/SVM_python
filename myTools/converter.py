@@ -64,7 +64,9 @@ def jsonFileFeatures(txt_feature_folder, json_feature_folder, scales):
         scale_feature_json = defaultdict(lambda: defaultdict(lambda: None))
         scale_feature_json[1]=2
         feature_fps = os.listdir(txt_feature_folder)
-        for feature_fp in feature_fps:
+        for cnt, feature_fp in enumerate(feature_fps):
+            if cnt %500 == 0:
+                print "%d / %d dinished"%(cnt, len(feature_fps))
             if scale != 100:
                 year, imid, d1, d2 = feature_fp.split('.')[0].split('_')
                 filename = '_'.join([year,imid])
