@@ -62,7 +62,6 @@ def jsonFileFeatures(txt_feature_folder, json_feature_folder, scales):
     myIO.basic.check_folder(json_feature_folder)
     for scale in scales: 
         scale_feature_json = defaultdict(lambda: defaultdict(lambda: None))
-        scale_feature_json[1]=2
         feature_fps = os.listdir(txt_feature_folder)
         for cnt, feature_fp in enumerate(feature_fps):
             if cnt %500 == 0:
@@ -80,4 +79,4 @@ def jsonFileFeatures(txt_feature_folder, json_feature_folder, scales):
             json.dump(scale_feature_json, batch_feature_file)
 
 if __name__ == "__main__":
-    jsonFileFeatures("/local/wangxin/Data/ferrari_gaze/matconvnet_m_2048_features/100", "/local/wangxin/Data/ferrari_gaze/m_2048_train_batch_feature", [100])
+    jsonFileFeatures("/local/wangxin/Data/ferrari_gaze/matconvnet_m_2048_features/90", "/local/wangxin/Data/ferrari_gaze/m_2048_train_batch_feature", [90])
