@@ -4,7 +4,6 @@ Created on Nov 15, 2015
 @author: xin
 '''
 import os
-import math
 import json
 from collections import defaultdict
 import myIO.basic
@@ -66,11 +65,17 @@ def jsonFileFeatures(txt_feature_folder, json_feature_folder, scales):
         scale_feature_json[1]=2
         feature_fps = os.listdir(txt_feature_folder)
         for feature_fp in feature_fps:
-            year, imid, d1, d2 = feature_fp.split('.')[0].split('_')
-            filename = '_'.join([year,imid])
-            index = int(d1)*scale2RowNumber(scale)+int(d2)
-            scale_feature_json[filename][index] = reader.file2FloatList(os.path.join(txt_feature_folder, feature_fp))
+            if scale != 100:
+                year, imid, d1, d2 = feature_fp.split('.')[0].split('_')
+                filename = '_'.join([year,imid])
+                index = int(d1)*scale2RowNumber(scale)+int(d2)
+                scale_feature_json[filename][index] = reader.file2FloatList(os.path.join(txt_feature_folder, feature_fp))
+            else:
+                filename= feature_fp.split('.')[0]
+                index = 0
+                scale_feature_json[filename][index] = reader.file2FloatList(os.path.join(txt_feature_folder, feature_fp))
         with open(os.path.join(json_feature_folder, str(scale)+'.json'),'w') as batch_feature_file:
             json.dump(scale_feature_json, batch_feature_file)
 
-jsonFileFeatures("/home/xin/Data/ferrari_gaze/matconvnet_m_2048_features/50", "/home/xin/batch_feature", [50])
+if __name__ == "__main__":
+    jsonFileFeatures("/local/wangxin/Data/ferrari_gaze/matconvnet_m_2048_features/100", "/local/wangxin/Data/ferrari_gaze/m_2048_train_batch_feature", [100])
