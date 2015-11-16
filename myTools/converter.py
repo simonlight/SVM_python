@@ -79,4 +79,4 @@ def jsonFileFeatures(txt_feature_folder, json_feature_folder, scales):
             json.dump(scale_feature_json, batch_feature_file)
 
 if __name__ == "__main__":
-    jsonFileFeatures("/local/wangxin/Data/ferrari_gaze/matconvnet_m_2048_features/40", "/local/wangxin/Data/ferrari_gaze/m_2048_train_batch_feature", [40])
+    jsonFileFeatures("/local/wangxin/Data/ferrari_gaze/matconvnet_m_2048_features/30", "/local/wangxin/Data/ferrari_gaze/m_2048_train_batch_feature", [30])
