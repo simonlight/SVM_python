@@ -65,14 +65,14 @@ def main():
 #     gazeType = "ferrari";
         
 #     local ferrari
-    sourceDir = "/local/wangxin/Data/ferrari_gaze/";
-    resDir = "/home/wangxin/results/ferrari_gaze/std_et/";
-    gazeType = "ferrari"
+#     sourceDir = "/local/wangxin/Data/ferrari_gaze/";
+#     resDir = "/home/wangxin/results/ferrari_gaze/std_et/";
+#     gazeType = "ferrari"
     
     # local test laptop
-#     sourceDir='/home/xin/'
-#     resDir = "/home/xin/results/ferrari_gaze/std_et/";
-#     gazeType = "ferrari"
+    sourceDir='/home/xin/'
+    resDir = "/home/xin/results/ferrari_gaze/std_et/";
+    gazeType = "ferrari"
         
     #local or other things
     
