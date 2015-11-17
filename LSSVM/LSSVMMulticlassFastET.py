@@ -9,6 +9,7 @@ import json
 import sys
 from myTools import vector
 from solver import MosekSolver
+import time
 class LSSVMMulticlassFastET(object):
     
     def __init__(self):
@@ -49,9 +50,11 @@ class LSSVMMulticlassFastET(object):
     
     def lossAugmentedInference(self,ts):
         valmax = -sys.maxint
+        h_range = self.enumerateH(ts.input.x)
         for y in self.listClass:
-            for h in self.enumerateH(ts.input.x):
+            for h in h_range:
 #                 print ts.output, y, ts.input.x, h, ts.input.h, self.hnorm                
+
                 loss = self.delta(ts.output, y, ts.input.x, h, ts.input.h, self.hnorm)
                 augmente = self.valueOf(ts.input.x,y,h,self.w) 
                 val = loss + augmente;
@@ -145,9 +148,10 @@ class LSSVMMulticlassFastET(object):
             ct += self.delta(ts.output, yp, ts.input.x,hp,ts.input.h,self.hnorm)#
             psi1 =self.psi(ts.input.x, hp); #
             psi2 = self.psi(ts.input.x, ts.input.h)#
-            for d in xrange(self.dim):
-                gt[yp][d] += -psi1[d]
-                gt[ts.output][d] += psi2[d]
+
+            gt[yp] += -psi1
+            gt[ts.output] += psi2
+
         ct /= n
         gt /= n
         
