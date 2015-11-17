@@ -171,6 +171,9 @@ def main():
                                         
 if __name__ == "__main__":
     import sys
+    sys.path.append("/home/wangxin/lib/lib/python2.7/site-packages")
+    sys.path.append("/home/wangxin/code/SVM_python")
+    
     import os
     import myIO.basic 
     import pickle
