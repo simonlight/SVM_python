@@ -85,5 +85,5 @@ def jsonFileFeatures(txt_feature_folder, json_feature_folder, scales, batch_size
         
 if __name__ == "__main__":
     import sys
-    jsonFileFeatures("/local/wangxin/Data/full_stefan_gaze/m2048_trainval_features", "/local/wangxin/Data/full_stefan_gaze/m2048_trainval_batch_feature", [int(sys.argv[1])], 100)
+    jsonFileFeatures("/local/wangxin/Data/gaze_voc_actions_stefan/m2048_test_features", "/local/wangxin/Data/full_stefan_gaze/m2048_test_batch_feature", [int(sys.argv[1])], 100)
     
