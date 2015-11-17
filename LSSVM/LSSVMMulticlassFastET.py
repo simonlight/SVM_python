@@ -140,12 +140,11 @@ class LSSVMMulticlassFastET(object):
         gt = np.zeros((self.nbClass, self.dim))
         ct = 0.0
         n=len(l)
-        for i in xrange(len(l)):
-            ts = l[i]
-            yp, hp = self.lossAugmentedInference(ts)
-            ct += self.delta(ts.output, yp, ts.input.x,hp,ts.input.h,self.hnorm)
-            psi1 =self.psi(ts.input.x, hp); 
-            psi2 = self.psi(ts.input.x, ts.input.h)
+        for ts in l:
+            yp, hp = self.lossAugmentedInference(ts) # 
+            ct += self.delta(ts.output, yp, ts.input.x,hp,ts.input.h,self.hnorm)#
+            psi1 =self.psi(ts.input.x, hp); #
+            psi2 = self.psi(ts.input.x, ts.input.h)#
             for d in xrange(self.dim):
                 gt[yp][d] += -psi1[d]
                 gt[ts.output][d] += psi2[d]
