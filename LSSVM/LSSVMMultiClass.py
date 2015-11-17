@@ -60,9 +60,9 @@ def main():
 #     gazeType = "stefan"
 
     # big ferrari
-#     sourceDir = "/home/wangxin/Data/ferrari_gaze/"
-#     simDir = "/home/wangxin/results/ferrari_gaze/std_et/"
-#     gazeType = "ferrari";
+    sourceDir = "/home/wangxin/Data/ferrari_gaze/"
+    resDir = "/home/wangxin/results/ferrari_gaze/std_et/"
+    gazeType = "ferrari";
         
     # local ferrari
 #     sourceDir = "/local/wangxin/Data/ferrari_gaze/";
@@ -70,19 +70,19 @@ def main():
 #     gazeType = "ferrari"
     
     # local test laptop
-    sourceDir='/home/xin/'
-    resDir = "/home/xin/results/ferrari_gaze/std_et/";
-    gazeType = "ferrari"
+#     sourceDir='/home/xin/'
+#     resDir = "/home/xin/results/ferrari_gaze/std_et/";
+#     gazeType = "ferrari"
         
     #local or other things
     
     dataSource= "local";
-    #lossPath = sourceDir+"ETLoss_dict/"
-    lossPath = '/home/xin/ETLoss_dict/'
+    lossPath = sourceDir+"ETLoss_dict/"
+#     lossPath = '/home/xin/ETLoss_dict/'
     testResultFileName = "debug_w.txt"
     detailFolder= "debug_w/"
 
-    lambdaCV = [1e-1]
+    lambdaCV = [1e-4]
     epsilonCV = [1e-3]
     scaleCV = [int(sys.argv[2])]    
     categories = [sys.argv[1]]
@@ -100,7 +100,6 @@ def main():
     cpmax = 5000;
     cpmin = 2;
     splitCV = [1];
-        
     
     load_classifier = True
     save_classifier = True
@@ -110,7 +109,7 @@ def main():
                      optim, epochsLatentMax, epochsLatentMin, cpmax, cpmin, splitCV)
     
     for scale in scaleCV:
-        batch_feature_json_fp ="/home/xin/batch_feature/50.json"
+        batch_feature_json_fp =os.path.join(sourceDir, str(scale)+'.json')
         for category in categories:
             for split in scaleCV:
 #                 listTrain = BagReader.readIndividualBagMIL(get_example_file_fp(sourceDir, scale, category, "train",test_suffix), numWords, True, dataSource)
@@ -175,7 +174,6 @@ if __name__ == "__main__":
     import os
     import myIO.basic 
     import pickle
-    import json
     from myIO import BagReader  
     from myTools.STrainingList import STrainingList 
     from LSSVMMulticlassFastBagMILET import LSSVMMulticlassFastBagMILET
