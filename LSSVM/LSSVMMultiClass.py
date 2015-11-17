@@ -60,14 +60,14 @@ def main():
 #     gazeType = "stefan"
 
 #     # big ferrari
-    sourceDir = "/home/wangxin/Data/ferrari_gaze/"
-    resDir = "/home/wangxin/results/ferrari_gaze/std_et/"
-    gazeType = "ferrari";
+#     sourceDir = "/home/wangxin/Data/ferrari_gaze/"
+#     resDir = "/home/wangxin/results/ferrari_gaze/std_et/"
+#     gazeType = "ferrari";
         
 #     local ferrari
-#     sourceDir = "/local/wangxin/Data/ferrari_gaze/";
-#     resDir = "/home/wangxin/results/ferrari_gaze/std_et/";
-#     gazeType = "ferrari"
+    sourceDir = "/local/wangxin/Data/ferrari_gaze/";
+    resDir = "/home/wangxin/results/ferrari_gaze/std_et/";
+    gazeType = "ferrari"
     
     # local test laptop
 #     sourceDir='/home/xin/'
@@ -160,6 +160,7 @@ def main():
                                 lsvm.setClassName(category);
                                 
                                 lsvm.train(example_train)
+                                
                                 if save_classifier:
                                     print "saving lssvm:%s"%classifier_fp 
                                     with  open(classifier_fp, 'w') as lssvm_path:

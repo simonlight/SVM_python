@@ -45,7 +45,8 @@ class LSSVMMulticlassFastET(object):
 
     
     def valueOf(self, x, y, h, w):
-        return np.dot(w[y], self.psi(x,h))
+        res = np.dot(w[y], self.psi(x,h))
+        return res
     
     
     def lossAugmentedInference(self,ts):
@@ -57,11 +58,11 @@ class LSSVMMulticlassFastET(object):
 
                 loss = self.delta(ts.output, y, ts.input.x, h, ts.input.h, self.hnorm)
                 augmente = self.valueOf(ts.input.x,y,h,self.w) 
-                val = loss + augmente;
+                val = loss + augmente
                 if(val>valmax):
-                    valmax = val;
-                    ypredict = y;
-                    hpredict = h;
+                    valmax = val
+                    ypredict = y
+                    hpredict = h
 
 #                     maxdelta = self.delta(ts.output, y, ts.input.x, h, ts.input.h, self.hnorm);
 #                     maxvalue = self.valueOf(ts.input.x,y,h,self.w);

@@ -58,25 +58,30 @@ def jsonGazeCategoryDependent(txt_feature_folder, json_feature_folder, scales, c
             json.dump(scale_feature, all_feature_file)
         
 # jsonGazeCategoryDependent('./ETLoss_ratio','./ETLoss_json', [50], ["dog", "cat", "motorbike", "boat", "aeroplane", "horse", "cow", "sofa" ,"diningtable" ,"bicycle"])
-def jsonFileFeatures(txt_feature_folder, json_feature_folder, scales):
-    myIO.basic.check_folder(json_feature_folder)
+def jsonFileFeatures(txt_feature_folder, json_feature_folder, scales, batch_size):
+    for scale in scales:
+        myIO.basic.check_folder(os.path.join(json_feature_folder, str(scale)))
+    
     for scale in scales: 
         scale_feature_json = defaultdict(lambda: defaultdict(lambda: None))
-        feature_fps = os.listdir(txt_feature_folder)
+        txt_feature_folder_of_scale = os.path.join(txt_feature_folder,str(scale))
+        feature_fps = os.listdir(txt_feature_folder_of_scale)
+        batch_feature_num = batch_size * scale2RowNumber(scale)**2
         for cnt, feature_fp in enumerate(feature_fps):
-            if cnt %500 == 0:
-                print "%d / %d dinished"%(cnt, len(feature_fps))
+            if cnt != 0 and cnt % (batch_feature_num)== 0:
+                with open(os.path.join(json_feature_folder, str(scale), str(cnt / (batch_feature_num)-1) + '.json'),'w') as batch_feature_file:
+                    json.dump(scale_feature_json, batch_feature_file)
+                    scale_feature_json = defaultdict(lambda: defaultdict(lambda: None))
+                    print "%d / %d finished and saved"%(cnt, len(feature_fps))
             if scale != 100:
                 year, imid, d1, d2 = feature_fp.split('.')[0].split('_')
                 filename = '_'.join([year,imid])
                 index = int(d1)*scale2RowNumber(scale)+int(d2)
-                scale_feature_json[filename][index] = reader.file2FloatList(os.path.join(txt_feature_folder, feature_fp))
+                scale_feature_json[filename][index] = reader.file2FloatList(os.path.join(txt_feature_folder_of_scale, feature_fp))
             else:
                 filename= feature_fp.split('.')[0]
                 index = 0
-                scale_feature_json[filename][index] = reader.file2FloatList(os.path.join(txt_feature_folder, feature_fp))
-        with open(os.path.join(json_feature_folder, str(scale)+'.json'),'w') as batch_feature_file:
-            json.dump(scale_feature_json, batch_feature_file)
-
+                scale_feature_json[filename][index] = reader.file2FloatList(os.path.join(txt_feature_folder_of_scale, feature_fp))
+        
 if __name__ == "__main__":
-    jsonFileFeatures("/local/wangxin/Data/ferrari_gaze/matconvnet_m_2048_features/30", "/local/wangxin/Data/ferrari_gaze/m_2048_train_batch_feature", [30])
+    jsonFileFeatures("/local/wangxin/Data/ferrari_gaze/m2048_test_features", "/local/wangxin/Data/ferrari_gaze/m_2048_test_batch_feature", [100], 100)

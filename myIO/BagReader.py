@@ -25,7 +25,7 @@ def readIndividualFeatureExample(example, bias):
     
     assert feature_num == len(features_path)
     
-    features = np.array([readIndividualFeatureFile(feature_path) for feature_path in features_path])
+    features = np.array([readIndividualFeatureFile(feature_path) for feature_path in features_path], dtype=np.float32)
     features = vector.L2norm(features)
     feature_rownum = features.shape[0]
     if bias :
@@ -53,7 +53,7 @@ def readBatchFeatureExample(example, batch_features, bias):
     filename = example_info[0]
     label = int(example_info[1])
     
-    features = np.array(batch_features[filename].values())
+    features = np.array(batch_features[filename].values(), dtype=np.float32)
     features = vector.L2norm(features)
     feature_rownum = features.shape[0]
     if bias :
@@ -67,7 +67,6 @@ def readBatchBagMIL(example_filepath, batch_features, dim, bias, dataSource):
         raise IOError
     else:
         print ' '.join(["reading bag:",example_filepath,"\t dimension: ",str(dim)])
-        
         with open(example_filepath) as ef:
             example_number = int(ef.readline().strip())
             examples = ef.readlines()
