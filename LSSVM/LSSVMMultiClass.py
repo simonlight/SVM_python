@@ -59,15 +59,15 @@ def main():
 #     simDir = "/local/wangxin/results/stefan_gaze/std_et/"
 #     gazeType = "stefan"
 
-    # big ferrari
-    sourceDir = "/home/wangxin/Data/ferrari_gaze/"
-    resDir = "/home/wangxin/results/ferrari_gaze/std_et/"
-    gazeType = "ferrari";
+#     # big ferrari
+#     sourceDir = "/home/wangxin/Data/ferrari_gaze/"
+#     resDir = "/home/wangxin/results/ferrari_gaze/std_et/"
+#     gazeType = "ferrari";
         
-    # local ferrari
-#     sourceDir = "/local/wangxin/Data/ferrari_gaze/";
-#     resDir = "/home/wangxin/results/ferrari_gaze/std_et/";
-#     gazeType = "ferrari"
+#     local ferrari
+    sourceDir = "/local/wangxin/Data/ferrari_gaze/";
+    resDir = "/home/wangxin/results/ferrari_gaze/std_et/";
+    gazeType = "ferrari"
     
     # local test laptop
 #     sourceDir='/home/xin/'
@@ -101,8 +101,8 @@ def main():
     cpmin = 2;
     splitCV = [1];
     
-    load_classifier = True
-    save_classifier = True
+    load_classifier = False
+    save_classifier = False
     
     print_exp_detail(categories, lambdaCV, epsilonCV, scaleCV, tradeoffCV,\
                      initializedType, test_suffix, hnorm, numWords,\
@@ -173,6 +173,7 @@ def main():
                                         
 if __name__ == "__main__":
     import sys
+    #for big
     sys.path.append("/home/wangxin/lib/lib/python2.7/site-packages")
     sys.path.append("/home/wangxin/code/SVM_python")
     

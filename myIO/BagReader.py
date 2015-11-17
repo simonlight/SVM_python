@@ -11,6 +11,7 @@ from myTools import reader
 from myTools import vector
 import collections
 import json
+
 def readIndividualFeatureFile(feature_path):
     features = reader.file2list(feature_path)
     return [float(feature) for feature in features]
