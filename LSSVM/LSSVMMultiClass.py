@@ -109,7 +109,7 @@ def main():
                      optim, epochsLatentMax, epochsLatentMin, cpmax, cpmin, splitCV)
     
     for scale in scaleCV:
-        batch_feature_json_fp =os.path.join(sourceDir, str(scale)+'.json')
+        batch_feature_json_fp =os.path.join(sourceDir, "m_2048_train_batch_feature",str(scale)+'.json')
         for category in categories:
             for split in scaleCV:
 #                 listTrain = BagReader.readIndividualBagMIL(get_example_file_fp(sourceDir, scale, category, "train",test_suffix), numWords, True, dataSource)
