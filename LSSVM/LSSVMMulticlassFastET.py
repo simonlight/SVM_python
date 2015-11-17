@@ -45,7 +45,7 @@ class LSSVMMulticlassFastET(object):
 
     
     def valueOf(self, x, y, h, w):
-        return np.dot(w[y][:], self.psi(x,h))
+        return np.dot(w[y], self.psi(x,h))
     
     
     def lossAugmentedInference(self,ts):
@@ -63,8 +63,8 @@ class LSSVMMulticlassFastET(object):
                     ypredict = y;
                     hpredict = h;
 
-                    maxdelta = self.delta(ts.output, y, ts.input.x, h, ts.input.h, self.hnorm);
-                    maxvalue = self.valueOf(ts.input.x,y,h,self.w);
+#                     maxdelta = self.delta(ts.output, y, ts.input.x, h, ts.input.h, self.hnorm);
+#                     maxvalue = self.valueOf(ts.input.x,y,h,self.w);
         return [ypredict, hpredict]
     
     def prediction(self, lr):
@@ -129,15 +129,14 @@ class LSSVMMulticlassFastET(object):
             self.w *= 0
             
             for i in range(len(alphas)):
-                for k in range(self.nbClass):
-                    for d in range(self.dim):
-                        self.w[k][d] += alphas[i]*lg[i][k][d]  
+                self.w += alphas[i]*lg[i]
             t+=1
             
             gt, ct = self.cuttingPlane(l)
             
             lg.append(gt)
             lc.append(ct)
+        print "cutting plane time:%d"%t
     
     def cuttingPlane(self, l):
         gt = np.zeros((self.nbClass, self.dim))
@@ -146,7 +145,7 @@ class LSSVMMulticlassFastET(object):
         for ts in l:
             yp, hp = self.lossAugmentedInference(ts) # 
             ct += self.delta(ts.output, yp, ts.input.x,hp,ts.input.h,self.hnorm)#
-            psi1 =self.psi(ts.input.x, hp); #
+            psi1 = self.psi(ts.input.x, hp); #
             psi2 = self.psi(ts.input.x, ts.input.h)#
 
             gt[yp] += -psi1
