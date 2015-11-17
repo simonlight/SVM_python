@@ -59,15 +59,14 @@ def readBatchFeatureExample(example, batch_features, bias):
         features = np.concatenate((features, np.ones((feature_rownum,1))), axis=1)
     return TrainingSample.TrainingSample(BagMIL.BagMIL(filename, label, features), label)
 
-def readBatchBagMIL(example_filepath, batch_feature_json_fp, dim, bias, dataSource):
+def readBatchBagMIL(example_filepath, batch_features, dim, bias, dataSource):
     example_list = []
     if not os.path.exists(example_filepath):
         print "%s not found"%example_filepath
         raise IOError
     else:
         print ' '.join(["reading bag:",example_filepath,"\t dimension: ",str(dim)])
-        with open(batch_feature_json_fp) as batch_feature_json:
-            batch_features = json.load(batch_feature_json)
+        
         with open(example_filepath) as ef:
             example_number = int(ef.readline().strip())
             examples = ef.readlines()

@@ -77,7 +77,7 @@ def main():
     #local or other things
     
     dataSource= "local";
-    lossPath = sourceDir+"ETLoss_dict/"
+    lossPath = sourceDir+"ETLoss_json/"
 #     lossPath = '/home/xin/ETLoss_dict/'
     testResultFileName = "debug_w.txt"
     detailFolder= "debug_w/"
@@ -110,14 +110,16 @@ def main():
     
     for scale in scaleCV:
         batch_feature_json_fp =os.path.join(sourceDir, "m_2048_train_batch_feature",str(scale)+'.json')
+        with open(batch_feature_json_fp) as batch_feature_json:
+            batch_features = json.load(batch_feature_json)
         for category in categories:
             for split in scaleCV:
 #                 listTrain = BagReader.readIndividualBagMIL(get_example_file_fp(sourceDir, scale, category, "train",test_suffix), numWords, True, dataSource)
 #                 listVal = BagReader.readIndividualBagMIL(get_example_file_fp(sourceDir, scale, category, "val",test_suffix), numWords, True, dataSource)
                 train_example_file_fp = get_example_file_fp(sourceDir, scale, category, "train",test_suffix)
-                listTrain = BagReader.readBatchBagMIL(train_example_file_fp,batch_feature_json_fp, numWords, True, dataSource)
+                listTrain = BagReader.readBatchBagMIL(train_example_file_fp,batch_features, numWords, True, dataSource)
                 val_example_file_fp = get_example_file_fp(sourceDir, scale, category, "val",test_suffix)
-                listVal = BagReader.readBatchBagMIL(val_example_file_fp,batch_feature_json_fp, numWords, True, dataSource)
+                listVal = BagReader.readBatchBagMIL(val_example_file_fp,batch_features, numWords, True, dataSource)
 #                 
                 for epsilon in epsilonCV:
                     for lbd in lambdaCV:
@@ -175,6 +177,7 @@ if __name__ == "__main__":
     sys.path.append("/home/wangxin/code/SVM_python")
     
     import os
+    import json
     import myIO.basic 
     import pickle
     from myIO import BagReader  
