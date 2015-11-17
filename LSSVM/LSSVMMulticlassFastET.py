@@ -106,25 +106,24 @@ class LSSVMMulticlassFastET(object):
         
         while (t<self.cpmin) or (t <= self.cpmax and vector.dot(self.w, gt) < ct - xi - self.epsilon):
             print '.',
+            lc_length = len(lc)
             if t == self.cpmax:
                 print "#max iter"
             if (gram is None):
-                gram = np.zeros([len(lc), len(lc)])
-                for i in xrange(gram.shape[0]):
-                    for j in xrange(gram.shape[1]):
-                        gram[i][j] = vector.dot(lg[j], lg[i])
-                        gram[j][i] = gram[i][j]
-                        if i==j:
-                            gram[i][j] += 1e-8
+                gram = np.zeros([lc_length, lc_length])
+                for i in xrange(lc_length):
+                    for j in xrange(lc_length):
+                        gram[i][j] = gram[j][i] = vector.dot(lg[j], lg[i])
+                gram += 1e-8*np.eye(lc_length,lc_length)
+
             else:
                 row_num, col_num = gram.shape
                 gram = np.concatenate((gram,np.zeros((1,col_num))),axis=0)
                 gram = np.concatenate((gram,np.zeros((row_num+1,1))),axis=1)
                 lc_length = len(lc)
                 for i in range(lc_length):
-                    gram[lc_length-1][i] =  vector.dot(lg[lc_length-1], lg[i])
-                    gram[i][lc_length-1] = gram[lc_length-1][i]
-                    gram[lc_length-1][lc_length-1]+=1e-8
+                    gram[lc_length-1][i] = gram[i][lc_length-1] = vector.dot(lg[lc_length-1], lg[i])
+                gram[lc_length-1][lc_length-1] +=1e-8
             alphas = MosekSolver.solveQP(gram, lc, c)
             xi = (vector.dot(alphas, lc) - np.dot(np.dot(alphas,gram), alphas)) / c;
             self.w *= 0

@@ -9,7 +9,7 @@ import numpy as np
 from metric import metric
 class LSSVMMulticlassFastBagMILET(LSSVMMulticlassFastET):
     def enumerateH(self, bagMILx):
-        return range(len(bagMILx.features))
+        return xrange(len(bagMILx.features))
 
     def psi(self, bagMILx, h):
         return bagMILx.features[h]
