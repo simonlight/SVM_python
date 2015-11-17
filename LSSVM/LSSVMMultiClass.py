@@ -89,7 +89,7 @@ def main():
     tradeoffCV = [0, 0.1]
     
     initializedType = "noInit"
-    test_suffix="test";
+    test_suffix="";
     hnorm = False;
     #add sys params
     
