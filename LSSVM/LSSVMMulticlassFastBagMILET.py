@@ -23,7 +23,7 @@ class LSSVMMulticlassFastBagMILET(LSSVMMulticlassFastET):
     
     def getGazeRatio(self, x, h, gazeType):
         if gazeType == "ferrari":
-            gaze_ratio = self.lossMap[str(self.scale)][x.name][str(self.className)][str(h)]
+            gaze_ratio = self.lossMap[str(self.scale)][x.name+'.txt'][str(self.className)][str(h)]
             return gaze_ratio[0]
         elif gazeType == "stefan":
             feature_path = x.features[h].split('/')
