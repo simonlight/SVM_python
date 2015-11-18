@@ -99,7 +99,7 @@ def combineFeatureJson(batch_feature_mainfolder,scales):
         json.dump(final_json,open(os.path.join(batch_feature_folder,'all.json'),'w'))
 
 if __name__ == '__main__':
-    combineFeatureJson("/local/wangxin/Data/ferrari_gaze/m_2048_trainval_batch_feature/", [80,70,60,50,40,30])
+    combineFeatureJson("/home/wangxin/Data/ferrari_gaze/m_2048_trainval_batch_feature/", [40,30])
 
     
     
