@@ -100,7 +100,7 @@ def combineFeatureJson(batch_feature_mainfolder,scales):
 if __name__ == '__main__':
 #     import sys
 #     sys.path.append("")
-    combineFeatureJson("/home/wangxin/Data/ferrari_gaze/m_2048_test_batch_feature/", [40])
+    combineFeatureJson("/home/wangxin/Data/ferrari_gaze/m_2048_test_batch_feature/", [30])
 
     
     
