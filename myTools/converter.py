@@ -68,11 +68,15 @@ def jsonFileFeatures(txt_feature_folder, json_feature_folder, scales, batch_size
         feature_fps = os.listdir(txt_feature_folder_of_scale)
         batch_feature_num = batch_size * scale2RowNumber(scale)**2
         for cnt, feature_fp in enumerate(feature_fps):
+            if len(feature_fps)/batch_feature_num != cnt / batch_feature_num:
+                continue
             if cnt != 0 and cnt % (batch_feature_num)== 0:
-                with open(os.path.join(json_feature_folder, str(scale), str(cnt / (batch_feature_num)-1) + '.json'),'w') as batch_feature_file:
-                    json.dump(scale_feature_json, batch_feature_file)
-                    scale_feature_json = defaultdict(lambda: defaultdict(lambda: None))
-                    print "%d / %d finished and saved"%(cnt, len(feature_fps))
+                pass
+
+#                 with open(os.path.join(json_feature_folder, str(scale), str(cnt / (batch_feature_num)-1) + '.json'),'w') as batch_feature_file:
+#                     json.dump(scale_feature_json, batch_feature_file)
+#                     scale_feature_json = defaultdict(lambda: defaultdict(lambda: None))
+#                     print "%d / %d finished and saved"%(cnt, len(feature_fps)-1)
             if scale != 100:
                 year, imid, d1, d2 = feature_fp.split('.')[0].split('_')
                 filename = '_'.join([year,imid])
@@ -82,8 +86,13 @@ def jsonFileFeatures(txt_feature_folder, json_feature_folder, scales, batch_size
                 filename= feature_fp.split('.')[0]
                 index = 0
                 scale_feature_json[filename][index] = reader.file2FloatList(os.path.join(txt_feature_folder_of_scale, feature_fp))
+        with open(os.path.join(json_feature_folder, str(scale), str(cnt / (batch_feature_num)) + '.json'),'w') as batch_feature_file:
+            print os.path.join(json_feature_folder, str(scale), str(cnt / (batch_feature_num)) + '.json')
+            json.dump(scale_feature_json, batch_feature_file)
+            scale_feature_json = defaultdict(lambda: defaultdict(lambda: None))
+            print "%d / %d finished and saved"%(cnt, len(feature_fps)-1)
         
 if __name__ == "__main__":
     import sys
-    jsonFileFeatures("/local/wangxin/Data/gaze_voc_actions_stefan/m2048_test_features", "/local/wangxin/Data/full_stefan_gaze/m2048_test_batch_feature", [int(sys.argv[1])], 100)
+    jsonFileFeatures("/local/wangxin/Data/ferrari_gaze/m_2048_test_features", "/local/wangxin/Data/ferrari_gaze/m_2048_test_batch_feature", [100,90,80,70,60,50,40,30], 100)
     
