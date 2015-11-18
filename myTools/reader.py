@@ -3,14 +3,13 @@ Created on Nov 14, 2015
 
 @author: xin
 '''
-# import json
-# import os
-# import numpy as np
+import json
+import os
+import numpy as np
 # from DataType import BagMIL
 # from DataType import TrainingSample
 # from myTools import vector
-# import collections
-# import cPickle
+import collections
 
 def file2list(filepath):
     with open(filepath) as fp:
