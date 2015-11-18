@@ -3,14 +3,14 @@ Created on Nov 14, 2015
 
 @author: xin
 '''
-import json
-import os
-import numpy as np
-from DataType import BagMIL
-from DataType import TrainingSample
-from myTools import vector
-import collections
-import cPickle
+# import json
+# import os
+# import numpy as np
+# from DataType import BagMIL
+# from DataType import TrainingSample
+# from myTools import vector
+# import collections
+# import cPickle
 
 def file2list(filepath):
     with open(filepath) as fp:
@@ -99,6 +99,8 @@ def combineFeatureJson(batch_feature_mainfolder,scales):
         json.dump(final_json,open(os.path.join(batch_feature_folder,'all.json'),'w'))
 
 if __name__ == '__main__':
+#     import sys
+#     sys.path.append("")
     combineFeatureJson("/home/wangxin/Data/ferrari_gaze/m_2048_trainval_batch_feature/", [30])
 
     
