@@ -6,9 +6,9 @@ Created on Nov 14, 2015
 import json
 import os
 import numpy as np
-# from DataType import BagMIL
-# from DataType import TrainingSample
-# from myTools import vector
+from DataType import BagMIL
+from DataType import TrainingSample
+from myTools import vector
 import collections
 
 def file2list(filepath):
@@ -82,25 +82,26 @@ def readBatchBagMIL(example_filepath, batch_features, dim, bias, dataSource):
             example_list = [readBatchFeatureExample(example.strip(), batch_features, bias) for example in ef.readlines()]
     return example_list
 
-def combineFeatureJson(batch_feature_mainfolder,scales):
+def combineFeatureJson(batch_feature_mainfolders,scales):
     """combine seperate jsons together, use only once!!!!"""
-    for scale in scales:
-        print batch_feature_mainfolder,scale
-        batch_feature_folder = os.path.join(batch_feature_mainfolder,str(scale))
-        feature_json = [readFeatureJson(os.path.join(batch_feature_folder, feature_fp)) for feature_fp in os.listdir(batch_feature_folder)]
-        final_json = collections.defaultdict(lambda: collections.defaultdict(lambda: None))
-        for cnt,d in enumerate(feature_json):
+    for batch_feature_mainfolder in batch_feature_mainfolders:
+        for scale in scales:
+            print batch_feature_mainfolder,scale
+            batch_feature_folder = os.path.join(batch_feature_mainfolder,str(scale))
+            feature_json = [readFeatureJson(os.path.join(batch_feature_folder, feature_fp)) for feature_fp in os.listdir(batch_feature_folder)]
+            final_json = collections.defaultdict(lambda: collections.defaultdict(lambda: None))
+            for cnt,d in enumerate(feature_json):
+                
+                for k, v in d.items():
+                    for k2, v2 in v.items():
+                        final_json[k][k2] = v2
             
-            for k, v in d.items():
-                for k2, v2 in v.items():
-                    final_json[k][k2] = v2
-        
-        json.dump(final_json,open(os.path.join(batch_feature_folder,'all.json'),'w'))
+            json.dump(final_json,open(os.path.join(batch_feature_folder,'all.json'),'w'))
 
 if __name__ == '__main__':
 #     import sys
 #     sys.path.append("")
-    combineFeatureJson("/home/wangxin/Data/ferrari_gaze/m_2048_test_batch_feature/", [30])
+    combineFeatureJson(["/local/wangxin/Data/full_stefan_gaze/m_2048_test_batch_feature/", "/local/wangxin/Data/full_stefan_gaze/m_2048_trainval_batch_feature/"], [100,90,80,70,60,50,40,30])
 
     
     

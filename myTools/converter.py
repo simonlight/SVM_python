@@ -93,6 +93,5 @@ def jsonFileFeatures(txt_feature_folder, json_feature_folder, scales, batch_size
             print "%d / %d finished and saved"%(cnt, len(feature_fps)-1)
         
 if __name__ == "__main__":
-    import sys
     jsonFileFeatures("/local/wangxin/Data/ferrari_gaze/m_2048_test_features", "/local/wangxin/Data/ferrari_gaze/m_2048_test_batch_feature", [100,90,80,70,60,50,40,30], 100)
     
