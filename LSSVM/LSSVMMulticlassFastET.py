@@ -38,7 +38,7 @@ class LSSVMMulticlassFastET(object):
     def psi(self, l):
         raise NotImplementedError
 
-    def enumerateH(self,x):
+    def enumerateH(self):
         raise NotImplementedError
     
     def delta(self, yi, yp, x, h, hstar, hnorm):
@@ -58,7 +58,7 @@ class LSSVMMulticlassFastET(object):
         
     def lossAugmentedInference(self,ts):
         valmax = -sys.maxint
-        h_range = self.enumerateH(ts.input.x)
+        h_range = self.enumerateH()
         for h in h_range:
             augmente_psi = self.psi(ts.input.x,h)
             for y in self.listClass:
@@ -68,7 +68,7 @@ class LSSVMMulticlassFastET(object):
                 loss = self.delta(ts.output, y, ts.input.x, h, ts.input.h, self.hnorm)
 #                 augmente = self.valueOf(ts.input.x,y,h,self.w) 
                 
-                augmente = self.valueOf(wy,augmente_psi) 
+                augmente = np.dot(wy,augmente_psi) 
                 val = loss + augmente
                 if(val>valmax):
                     valmax, ypredict, hpredict = self.renew_prediction(val, y, h)
@@ -80,7 +80,7 @@ class LSSVMMulticlassFastET(object):
     def prediction(self, lr):
         valmax = -sys.maxint
         lr_x = lr.x
-        for h in self.enumerateH(lr_x):
+        for h in self.enumerateH():
             prediction_psi = self.psi(lr_x, h)
             for y in self.listClass:
                 wy = self.w[y]
@@ -94,7 +94,7 @@ class LSSVMMulticlassFastET(object):
     def hPrediction(self, x, y):
         valmax = -sys.maxint
         wy=self.w[y]
-        for h in self.enumerateH(x):
+        for h in self.enumerateH():
             val = self.valueOf(wy, self.psi(x,h));
             if val>valmax:
                 valmax = val

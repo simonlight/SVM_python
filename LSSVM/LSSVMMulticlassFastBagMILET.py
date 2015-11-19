@@ -10,7 +10,7 @@ from metric import metric
 class LSSVMMulticlassFastBagMILET(LSSVMMulticlassFastET):
     
     
-    def enumerateH(self, bagMILx):
+    def enumerateH(self):
         
         return xrange(self.region_number)
 
