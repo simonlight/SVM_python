@@ -30,6 +30,7 @@ class LSSVMMulticlassFastET(object):
         self.nbClass = None
         self.listClass = None
         self.scale = None
+        self.region_number = None
     
     def init(self, l):
         raise NotImplementedError
@@ -44,20 +45,26 @@ class LSSVMMulticlassFastET(object):
         raise NotImplementedError
 
     
-    def valueOf(self, x, y, h, w):
-        res = np.dot(w[y], self.psi(x,h))
+    def valueOf(self, w, feature):
+        res = np.dot(w,feature)
+             
         return res
+#     def valueOf(self, x, y, h, w):
+#         res = np.dot(w[y], self.psi(x,h))
+#         return res
     
     
     def lossAugmentedInference(self,ts):
         valmax = -sys.maxint
         h_range = self.enumerateH(ts.input.x)
         for y in self.listClass:
+            wy = self.w[y]
             for h in h_range:
 #                 print ts.output, y, ts.input.x, h, ts.input.h, self.hnorm                
 
                 loss = self.delta(ts.output, y, ts.input.x, h, ts.input.h, self.hnorm)
-                augmente = self.valueOf(ts.input.x,y,h,self.w) 
+#                 augmente = self.valueOf(ts.input.x,y,h,self.w) 
+                augmente = self.valueOf(wy,self.psi(ts.input.x,h)) 
                 val = loss + augmente
                 if(val>valmax):
                     valmax = val
@@ -70,9 +77,11 @@ class LSSVMMulticlassFastET(object):
     
     def prediction(self, lr):
         valmax = -sys.maxint
+        
         for y in self.listClass:
+            wy=self.w[y]
             for h in self.enumerateH(lr.x):
-                val = self.valueOf(lr.x, y, h, self.w);
+                val = self.valueOf(wy,self.psi(lr.x, h));
                 
                 if val>valmax:
                     valmax = val
@@ -82,8 +91,9 @@ class LSSVMMulticlassFastET(object):
 
     def hPrediction(self, x, y):
         valmax = -sys.maxint
+        wy=self.w[y]
         for h in self.enumerateH(x):
-            val = self.valueOf(x, y, h, self.w);
+            val = self.valueOf(wy, self.psi(x,h));
             if val>valmax:
                 valmax = val
                 hpredict = h;
@@ -97,7 +107,7 @@ class LSSVMMulticlassFastET(object):
         lc = []
         
         gt, ct = self.cuttingPlane(l)
-        
+
         lg.append(gt)
         lc.append(ct)
         
@@ -115,7 +125,6 @@ class LSSVMMulticlassFastET(object):
                     for j in xrange(lc_length):
                         gram[i][j] = gram[j][i] = vector.dot(lg[j], lg[i])
                 gram += 1e-8*np.eye(lc_length,lc_length)
-
             else:
                 row_num, col_num = gram.shape
                 gram = np.concatenate((gram,np.zeros((1,col_num))),axis=0)
@@ -131,9 +140,7 @@ class LSSVMMulticlassFastET(object):
             for i in range(len(alphas)):
                 self.w += alphas[i]*lg[i]
             t+=1
-            
             gt, ct = self.cuttingPlane(l)
-            
             lg.append(gt)
             lc.append(ct)
         print "cutting plane time:%d"%t
@@ -153,14 +160,15 @@ class LSSVMMulticlassFastET(object):
 
         ct /= n
         gt /= n
-        
         return [gt,ct]
     
     def loss(self, l):
         loss = 0
         for ts in l:
             yp, hp = self.lossAugmentedInference(ts)
-            loss += self.delta(ts.output, yp, ts.input.x, hp, ts.input.h, self.hnorm) + self.valueOf(ts.input.x,yp,hp,self.w)-self.valueOf(ts.input.x,ts.output,self.hPrediction(ts.input.x,ts.output),self.w);
+            loss += self.delta(ts.output, yp, ts.input.x, hp, ts.input.h, self.hnorm) + self.valueOf(self.w[yp],self.psi(ts.input.x,hp))\
+                    -self.valueOf(self.w[ts.output],self.psi(ts.input.x,self.hPrediction(ts.input.x,ts.output)));
+#             loss += self.delta(ts.output, yp, ts.input.x, hp, ts.input.h, self.hnorm) + self.valueOf(ts.input.x,yp,hp,self.w)-self.valueOf(ts.input.x,ts.output,self.hPrediction(ts.input.x,ts.output),self.w);
         loss /= len(l);
         return loss;
 

@@ -10,6 +10,8 @@ from DataType import BagMIL
 from DataType import TrainingSample
 from myTools import vector
 import collections
+from myTools import converter
+
 
 def file2list(filepath):
     with open(filepath) as fp:
@@ -36,7 +38,7 @@ def readIndividualFeatureExample(example, bias):
     
     assert feature_num == len(features_path)
     
-    features = np.array([readIndividualFeatureFile(feature_path) for feature_path in features_path], dtype=np.float32)
+    features = np.array([readIndividualFeatureFile(feature_path) for feature_path in features_path])
     features = vector.L2norm(features)
     feature_rownum = features.shape[0]
     if bias :
@@ -59,40 +61,48 @@ def readIndividualBagMIL(example_filepath, dim, bias, dataSource):
     return example_list
 
 
-def readBatchFeatureExample(example, batch_features, bias):
+
+def readBatchFeatureExample(example, batch_features, bias, scale):
     example_info = example.split()
     filename = example_info[0]
     label = int(example_info[1])
     
-    features = np.array(batch_features[filename].values(), dtype=np.float32)
+    
+    #normalization
+    #sorted by key
+    bag_features = batch_features[filename]    
+    features = np.array([bag_features[str(k)] for k in range(converter.scale2RowNumber(scale)**2)])
     features = vector.L2norm(features)
     feature_rownum = features.shape[0]
     if bias :
         features = np.concatenate((features, np.ones((feature_rownum,1))), axis=1)
+
     return TrainingSample.TrainingSample(BagMIL.BagMIL(filename, label, features), label)
 
-def readBatchBagMIL(example_filepath, batch_features, dim, bias, dataSource):
+def readBatchBagMIL(example_filepath, batch_features, dim, bias, dataSource, scale):
     print example_filepath
     if not os.path.exists(example_filepath):
         print "%s not found"%example_filepath
         raise IOError
     else:
+        example_list=[]
         print ' '.join(["reading bag:",example_filepath,"\t dimension: ",str(dim)])
         with open(example_filepath) as ef:
-            example_list = [readBatchFeatureExample(example.strip(), batch_features, bias) for example in ef.readlines()]
-    return example_list
+            for example in ef:
+                example_list.append(readBatchFeatureExample(example.strip(), batch_features, bias, scale))
+    return example_list[:200]
 
 def combineFeatureJson(batch_feature_mainfolders,scales):
     """combine seperate jsons together, use only once!!!!"""
     for batch_feature_mainfolder in batch_feature_mainfolders:
         for scale in scales:
             print batch_feature_mainfolder,scale
-            batch_feature_folder = os.path.join(batch_feature_mainfolder,str(scale))
-            feature_json = [readFeatureJson(os.path.join(batch_feature_folder, feature_fp)) for feature_fp in os.listdir(batch_feature_folder)]
             final_json = collections.defaultdict(lambda: collections.defaultdict(lambda: None))
-            for cnt,d in enumerate(feature_json):
-                
-                for k, v in d.items():
+            batch_feature_folder = os.path.join(batch_feature_mainfolder,str(scale))
+            for cnt,feature_fp in enumerate(os.listdir(batch_feature_folder)):
+                print cnt
+                feature_json = readFeatureJson(os.path.join(batch_feature_folder, feature_fp))
+                for k, v in feature_json.items():
                     for k2, v2 in v.items():
                         final_json[k][k2] = v2
             
@@ -101,7 +111,7 @@ def combineFeatureJson(batch_feature_mainfolders,scales):
 if __name__ == '__main__':
 #     import sys
 #     sys.path.append("")
-    combineFeatureJson(["/local/wangxin/Data/full_stefan_gaze/m_2048_test_batch_feature/", "/local/wangxin/Data/full_stefan_gaze/m_2048_trainval_batch_feature/"], [100,90,80,70,60,50,40,30])
+    #combineFeatureJson(["/local/wangxin/Data/ferrari_gaze/m_2048_test_batch_feature/", "/local/wangxin/Data/ferrari_gaze/m_2048_trainval_batch_feature/"], [90])
 
     
-    
+    pass

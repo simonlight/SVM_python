@@ -8,15 +8,20 @@ from myTools import converter
 import numpy as np
 from metric import metric
 class LSSVMMulticlassFastBagMILET(LSSVMMulticlassFastET):
+    
+    
     def enumerateH(self, bagMILx):
-        return xrange(len(bagMILx.features))
+        
+        return xrange(self.region_number)
 
     def psi(self, bagMILx, h):
+
         return bagMILx.features[h]
 
-    def init(self, l):     
+    def init(self, l): 
+        self.region_number = converter.scale2RowNumber(self.scale)**2    
         self.dim = len(l[0].input.x.features[0])
-        self.w = np.zeros((len(self.listClass),self.dim))
+        self.w = np.zeros((len(self.listClass),self.dim),np.float64)
     
     def getGazeInitRegion(self, ts, scale, mode):
         pass
@@ -75,10 +80,10 @@ class LSSVMMulticlassFastBagMILET(LSSVMMulticlassFastET):
         detection_file = open(detection_fp,"w")
         for ex in examples:
             yp, hp = self.prediction(ex.input)
-            score = self.valueOf(ex.input.x, yp, hp, self.w)
+            score = self.valueOf(self.w[yp],self.psi(ex.input.x,hp))
             y = ex.output
             label_value_list.append(self.getAPElement(y, yp, score))
-            detection_file.write("%d,%d,%d,%s\n"%(yp, y, hp, ex.input.x.name))
+            detection_file.write("%d,%d,%s,%s\n"%(yp, y, hp, ex.input.x.name))
         detection_file.close()
         return metric.getAP(label_value_list)
     

@@ -94,7 +94,7 @@ def main():
     epsilonCV = [1e-3]
     scaleCV = [int(sys.argv[2])]    
     categories = [sys.argv[1]]
-    tradeoffCV = [0.1]
+    tradeoffCV = [0]
     
     initializedType = "noInit"
     test_suffix="";
@@ -126,9 +126,8 @@ def main():
 #             train_batch_features = reader.combineFeatureJson(trainval_batch_json_folder)
 #             test_batch_features = reader.combineFeatureJson(test_batch_json_folder)
         elif exp_type == "validation":
-            train_batch_features = json.load(open("/local/wangxin/Data/ferrari_gaze/m_2048_trainval_batch_feature/90/all.json"))
+            train_batch_features = json.load(open("/local/wangxin/Data/ferrari_gaze/m_2048_trainval_batch_feature/single_json/90.json"))
             test_batch_features = train_batch_features
-            
 #             train_batch_features = reader.combineFeatureJson(trainval_batch_json_folder)
 #             test_batch_features = train_batch_features
             
@@ -146,22 +145,23 @@ def main():
                     train_example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, "train",test_suffix)
                     test_example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, "val",test_suffix)
                 
-                listTrain = reader.readBatchBagMIL(train_example_file_fp,train_batch_features, numWords, True, dataSource)
-                listTest = reader.readBatchBagMIL(test_example_file_fp,test_batch_features, numWords, True, dataSource)
-                    
+                listTrain = reader.readBatchBagMIL(train_example_file_fp,train_batch_features, numWords, True, dataSource, scale)
+                listTest = reader.readBatchBagMIL(test_example_file_fp,test_batch_features, numWords, True, dataSource, scale)
+                
                 for epsilon in epsilonCV:
                     for lbd in lambdaCV:
                         for tradeoff in tradeoffCV:
                             
                             example_train =  STrainingList(listTrain)
                             example_test = STrainingList(listTest)
-                            #Initialization
+                            
                             
                             ###############
                             lssvm_name = get_LSSVM_name(category, scale, lbd, epsilon, tradeoff,\
                                                         initializedType, test_suffix, hnorm, numWords,\
                                                         optim, epochsLatentMax, epochsLatentMin,\
                                                         cpmax, cpmin, split)
+                            
                             classifier_folder = os.path.join(resDir, 'classifier/')
                             myIO.basic.check_folder(classifier_folder)
                             classifier_fp = os.path.join(classifier_folder, lssvm_name)

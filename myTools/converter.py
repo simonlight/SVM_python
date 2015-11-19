@@ -88,7 +88,7 @@ def jsonFileFeatures(txt_feature_folder, json_feature_folder, scales, batch_size
                 scale_feature_json[filename][index] = reader.file2FloatList(os.path.join(txt_feature_folder_of_scale, feature_fp))
         with open(os.path.join(json_feature_folder, str(scale), str(cnt / (batch_feature_num)) + '.json'),'w') as batch_feature_file:
             print os.path.join(json_feature_folder, str(scale), str(cnt / (batch_feature_num)) + '.json')
-            json.dump(scale_feature_json, batch_feature_file)
+            #json.dump(scale_feature_json, batch_feature_file)
             scale_feature_json = defaultdict(lambda: defaultdict(lambda: None))
             print "%d / %d finished and saved"%(cnt, len(feature_fps)-1)
         
