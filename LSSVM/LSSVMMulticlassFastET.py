@@ -46,7 +46,7 @@ class LSSVMMulticlassFastET(object):
 
     
     def valueOf(self, w, feature):
-        res = np.dot(w,feature)
+        res = np.inner(w,feature)
              
         return res
 #     def valueOf(self, x, y, h, w):
@@ -65,6 +65,7 @@ class LSSVMMulticlassFastET(object):
 
                 loss = self.delta(ts.output, y, ts.input.x, h, ts.input.h, self.hnorm)
 #                 augmente = self.valueOf(ts.input.x,y,h,self.w) 
+                
                 augmente = self.valueOf(wy,augmente_psi) 
                 val = loss + augmente
                 if(val>valmax):
