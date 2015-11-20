@@ -66,6 +66,12 @@ class LSSVMMulticlassFastBagMILET(LSSVMMulticlassFastET):
         elif y == 0 and yp == 0:
             return [-1, -score]
     
+    def getScore(self, score, yp):
+        if yp == 1:
+            return score
+        elif yp==0:
+            return -score
+    
     def testAP(self, examples):
         label_value_list = []
         for ex in examples:
@@ -87,4 +93,11 @@ class LSSVMMulticlassFastBagMILET(LSSVMMulticlassFastET):
         detection_file.close()
         return metric.getAP(label_value_list)
     
-    
+    def getTestScore(self, examples, score_fp):
+        score_file = open(score_fp,"w")
+        for ex in examples:
+            yp, hp = self.prediction(ex.input)
+            score = self.valueOf(self.w[yp],self.psi(ex.input.x,hp))
+            score_file.write("%s %f\n"%(ex.input.x.name, self.getScore(score,yp)))
+        score_file.close()
+        

@@ -10,7 +10,13 @@ def getTestResults(lssvm, examples,typ, resDir,detailFolder, tradeoff, scale, ep
         detection_fp = os.path.join(detection_folder,'_'.join(["metric_"+typ, str(tradeoff), str(scale), str(epsilon), str(lbd), category+".txt"])) 
     ap = lssvm.testAPRegion(examples,detection_fp)
     return ap
-    
+
+def writeResultScore(lssvm, examples,typ, resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True):
+    score_folder = os.path.join(resDir,detailFolder)
+    myIO.basic.check_folder(score_folder)
+    score_fp = os.path.join(score_folder,'_'.join(["score_"+typ, str(tradeoff), str(scale), str(epsilon), str(lbd), category+".txt"]))    
+    lssvm.getTestScore(examples, score_fp)
+
 def print_exp_detail(categories, lambdaCV, epsilonCV, scaleCV, tradeoffCV,
                      initializedType, test_suffix, hnorm, numWords,
                      optim, epochsLatentMax, epochsLatentMin, cpmax, cpmin, splitCV, exp_type):
@@ -197,16 +203,20 @@ def main():
                             if exp_type == "validation":
                                 train_ap = getTestResults(lsvm, example_train, "train", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
                                 test_ap = getTestResults(lsvm, example_test, "val", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
+                                result_file = open(os.path.join(resDir, resultFileName),'w+')
+                                result_file.write(' '.join([category, str(tradeoff), str(scale), str(lbd), str(epsilon), str(test_ap), str(train_ap)]))
+                                result_file.close()
+                                print "train ap: %f"%train_ap
+                                print "test ap: %f"%test_ap
+                                print "***************************************************"
                             elif exp_type == "fulltest":
                                 train_ap = getTestResults(lsvm, example_train, "trainval", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
-                                test_ap = getTestResults(lsvm, example_test, "test", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
+                                result_file = open(os.path.join(resDir, resultFileName),'w+')
+                                result_file.write(' '.join([category, str(tradeoff), str(scale), str(lbd), str(epsilon), str(train_ap)]))
+                                result_file.close()
+                                test_ap = writeResultScore(lsvm, example_test, "test", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
                             
-                            result_file = open(os.path.join(resDir, resultFileName),'w+')
-                            result_file.write(' '.join([category, str(tradeoff), str(scale), str(lbd), str(epsilon), str(test_ap), str(train_ap)]))
-                            result_file.close()
-                            print "train ap: %f"%train_ap
-                            print "test ap: %f"%test_ap
-                            print "***************************************************"
+                           
                                     
                                         
 if __name__ == "__main__":

@@ -90,7 +90,7 @@ def readBatchBagMIL(example_filepath, batch_features, dim, bias, dataSource, sca
         with open(example_filepath) as ef:
             for example in ef:
                 example_list.append(readBatchFeatureExample(example.strip(), batch_features, bias, scale))
-    return example_list
+    return example_list[:200]
 
 def combineFeatureJsonIntoOneFile(batch_feature_mainfolders,scales):
     """combine seperate jsons together, use only once!!!!"""
