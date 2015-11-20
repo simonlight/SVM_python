@@ -98,6 +98,7 @@ def main():
 
     lambdaCV = [1e-4]
     epsilonCV = [1e-3]
+    print sys.argv
     categories = [sys.argv[1]]
     scaleCV = [int(sys.argv[2])]    
     tradeoffCV = [float(sys.argv[3])]
