@@ -100,7 +100,7 @@ def main():
     epsilonCV = [1e-3]
     categories = [sys.argv[1]]
     scaleCV = [int(sys.argv[2])]    
-    tradeoffCV = [sys.argv[3]]
+    tradeoffCV = [float(sys.argv[3])]
     
     initializedType = "noInit"
     test_suffix="";
