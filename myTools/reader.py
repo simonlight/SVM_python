@@ -108,15 +108,13 @@ def combineFeatureJsonIntoOneFile(batch_feature_mainfolders,scales):
             
             json.dump(final_json,open(os.path.join(batch_feature_folder,'all.json'),'w'))
 
-def combineFeatureJson(batch_feature_folder, verbose):
+def combineFeatureJson(batch_feature_folder):
     """combine seperate jsons together, use only once!!!!"""
     final_json = collections.defaultdict(lambda: collections.defaultdict(lambda: None))
     for cnt,feature_fp in enumerate(os.listdir(batch_feature_folder)):
         feature_json = readFeatureJson(os.path.join(batch_feature_folder, feature_fp))
         for k, v in feature_json.items():
             for k2, v2 in v.items():
-                if verbose:
-                    print k, k2, v2
                 final_json[k][k2] = v2
     
     return final_json
