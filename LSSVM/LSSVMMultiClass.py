@@ -3,6 +3,7 @@ Created on Nov 14, 2015
 
 @author: xin
 '''
+        
 def getTestResults(lssvm, examples,typ, resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True):
     if recording:
         detection_folder = os.path.join(resDir,detailFolder)
@@ -58,12 +59,12 @@ def pickle_LSSVM(classifier_fp):
     with open(classifier_fp) as lssvm:
         return pickle.load(lssvm)
 
-
-
-def evaluation_phase(lssvm,example_train, exp_type,\
-                     resDir,detailFolder, tradeoff, scale, epsilon, lbd, category):
+def evaluation_phase(lssvm,example_train, train_batch_features, exp_type,\
+                     resDir,detailFolder, \
+                     numWords, dataSource, resultFileName, example_root_folder, test_suffix):
     #Training results
-    train_ap = getTestResults(lssvm, example_train, "train", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
+    train_ap = getTestResults(lssvm, example_train, "train", resDir,detailFolder, lssvm.tradeoff, lssvm.scale,\
+                              lssvm.epsilon, lssvm.lbd, lssvm.category, recording = True)
     
     if exp_type == "validation":
         test_batch_features = train_batch_features
@@ -101,9 +102,9 @@ def train_phase(resDir, classifier_folder_name,\
                 load_classifier, listTrain, gazeType, lossPath, save_classifier):
     
     lssvm_name = get_LSSVM_name(category, scale, lbd, epsilon, tradeoff,\
-                                                        initializedType, test_suffix, hnorm, numWords,\
-                                                        optim, epochsLatentMax, epochsLatentMin,\
-                                                        cpmax, cpmin, split,exp_type)
+                                initializedType, test_suffix, hnorm, numWords,\
+                                optim, epochsLatentMax, epochsLatentMin,\
+                                cpmax, cpmin, split,exp_type)
                             
     classifier_folder = os.path.join(resDir, classifier_folder_name)
     myIO.basic.check_folder(classifier_folder)
@@ -117,6 +118,7 @@ def train_phase(resDir, classifier_folder_name,\
     else:
         example_train =  STrainingList(listTrain)
         print "training classifier:%s"%classifier_fp
+        
         lssvm = LSSVMMulticlassFastBagMILET()
         lssvm.setOptim(optim);
         lssvm.setEpochsLatentMax(epochsLatentMax);
@@ -187,10 +189,14 @@ def main():
     
     lambdaCV = [1e-4]
     epsilonCV = [1e-3]
-    categories = [sys.argv[1]]
-    scaleCV = [int(sys.argv[2])]    
+    categories = ["horse"]
+    scaleCV = [90]    
+    tradeoffCV = [0.1]
+    
+#     categories = [sys.argv[1]]
+#     scaleCV = [int(sys.argv[2])]    
 #     tradeoffCV = [float(sys.argv[3])]
-    tradeoffCV = [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
+#     tradeoffCV = [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
     initializedType = "noInit"
     test_suffix="";
     hnorm = False;
@@ -214,26 +220,10 @@ def main():
     for scale in scaleCV:
         
         trainval_batch_feature_mainfolder = os.path.join(trainval_batch_json_main_folder, str(scale))
-        train_batch_features = json.load(open("/home/wangxin/Data/ferrari_gaze/m_2048_trainval_batch_feature/single_json/"+str(scale)+".json"))
+        test_batch_feature_mainfolder = os.path.join(test_batch_json_main_folder, str(scale))
 
-#         test_batch_feature_mainfolder = os.path.join(test_batch_json_main_folder, str(scale))
-        if exp_type == "fulltest":
-            pass
-#             train_batch_features = reader.combineFeatureJson(trainval_batch_feature_mainfolder)
-#             test_batch_features = reader.combineFeatureJson(test_batch_feature_mainfolder)
-        elif exp_type == "validation":
-            pass
-#             train_batch_features = json.load(open("/local/wangxin/Data/ferrari_gaze/m_2048_trainval_batch_feature/single_json/90.json"))
-#             test_batch_features = train_batch_features
-#             train_batch_features = reader.combineFeatureJson(trainval_batch_feature_mainfolder)
-#             test_batch_features = train_batch_features            
-#             train_batch_features = reader.combineFeatureJson(trainval_batch_json_folder)
-#             test_batch_features = train_batch_features
-        elif exp_type == "trainval_valtest": 
-            pass
-        else:
-            raise NotImplementedError    
-            
+        train_batch_features = json.load(open("/home/wangxin/Data/ferrari_gaze/m_2048_trainval_batch_feature/single_json/"+str(scale)+".json"))
+        
         for category in categories:
             for split in scaleCV:
 #                 listTrain = BagReader.readIndividualBagMIL(get_example_file_fp(sourceDir, scale, category, "train",test_suffix), numWords, True, dataSource)
@@ -251,14 +241,12 @@ def main():
                     for lbd in lambdaCV:
                         for tradeoff in tradeoffCV:
                             
-                            
                             lssvm, example_train = train_phase(resDir, classifier_folder_name,\
                                                 category, scale, lbd, epsilon, tradeoff,\
                                                 initializedType, test_suffix, hnorm, numWords,\
                                                 optim, epochsLatentMax, epochsLatentMin,\
                                                 cpmax, cpmin, split,exp_type,\
                                                 load_classifier, listTrain, gazeType, lossPath, save_classifier)
-                           
                             
                             if exp_type == "validation":
                                 
@@ -278,6 +266,7 @@ def main():
                                 writeResultScore(lssvm, example_test, "val", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category)
                                 
                                 #Result Summary
+                                
                                 result_file = open(os.path.join(resDir, resultFileName),'w+')
                                 result_file.write(' '.join([category, str(tradeoff), str(scale), str(lbd), str(epsilon), str(test_ap), str(train_ap)]))
                                 result_file.close()
@@ -295,14 +284,14 @@ def main():
                                 listTest = reader.readBatchBagMIL(test_example_file_fp,test_batch_features, numWords, True, dataSource, scale)
                                 example_test = STrainingList(listTest)
 
-                                train_ap = getTestResults(lsvm, example_train, "trainval", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
+                                train_ap = getTestResults(lssvm, example_train, "trainval", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
                                 result_file = open(os.path.join(resDir, resultFileName),'a+')
                                 result_file.write(' '.join([category, str(tradeoff), str(scale), str(lbd), str(epsilon), str(train_ap)]))
                                 result_file.close()
 #                                 test_ap = writeResultScore(lsvm, example_test, "test", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
                             
                             elif exp_type == "trainval_valtest":
-                                
+                                pass
                            
                                     
                                         

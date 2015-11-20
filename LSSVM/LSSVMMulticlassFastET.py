@@ -23,7 +23,7 @@ class LSSVMMulticlassFastET(object):
         self.tradeoff = None
         self.gazeType = None
         self.hnorm = None
-        self.className = None
+        self.category = None
         self.lossMap = None
         self.dim = None
         self.w = None
@@ -239,8 +239,8 @@ class LSSVMMulticlassFastET(object):
         self.gazeType = gazeType
     def setHnorm(self, hnorm):
         self.hnorm = hnorm
-    def setClassName(self, className):
-        self.className = className
+    def setCategory(self, category):
+        self.category = category
     def setLossDict(self, lossMapPath):
         with open(lossMapPath) as lmp:
             self.lossMap = json.load(lmp)
