@@ -68,7 +68,7 @@ def evaluation_phase(lssvm,example_train, exp_type,\
     if exp_type == "validation":
         test_batch_features = train_batch_features
     elif exp_type == "fulltest":
-        
+        print 
     elif exp_type == "trainval_valtest":
         test_batch_features = train_batch_features
     #Prepare Test examples
