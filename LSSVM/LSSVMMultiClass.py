@@ -35,11 +35,11 @@ def print_exp_detail(categories, lambdaCV, epsilonCV, scaleCV, tradeoffCV,
 def get_LSSVM_name(category, scale, lbd, epsilon, tradeoff,
                    initializedType, test_suffix, hnorm, numWords,
                    optim, epochsLatentMax, epochsLatentMin,
-                   cpmax, cpmin, split):
+                   cpmax, cpmin, split, exp_type):
     return '_'.join([str(ele) for ele in [category, scale, lbd, epsilon, tradeoff,
                    initializedType, test_suffix, hnorm, numWords,
                    optim, epochsLatentMax, epochsLatentMin,
-                   cpmax, cpmin, split, '.lssvm']])
+                   cpmax, cpmin, split, exp_type,'.lssvm']])
     
 def get_thibaut_examplefile_fp(sourceDir,scale, category, example_typ, test_suffix):
     return os.path.join(sourceDir, "example_files", str(scale),'_'.join([category,example_typ, 'scale',str(scale),'matconvnet_m_2048_layer_20.txt'+test_suffix]))
@@ -70,7 +70,7 @@ def main():
         
 #     local ferrari
     sourceDir = "/local/wangxin/Data/ferrari_gaze/";
-    resDir = "/home/wangxin/results/ferrari_gaze/std_et/";
+    resDir = "/local/wangxin/results/ferrari_gaze/std_et/";
     gazeType = "ferrari"
     
     # local test laptop
@@ -85,10 +85,10 @@ def main():
     trainval_batch_json_main_folder = os.path.join(sourceDir, 'm_2048_trainval_batch_feature')
     test_batch_json_main_folder = os.path.join(sourceDir, 'm_2048_test_batch_feature')
     example_root_folder = os.path.join(sourceDir, "voc_example_file_10_categories")
-    exp_type = "validation"
+    exp_type = "fulltest"
 #     lossPath = '/home/xin/ETLoss_dict/'
-    testResultFileName = "debug_w.txt"
-    detailFolder= "debug_w/"
+    resultFileName = "outputdebug_w.txt"
+    detailFolder= "outputdebug_w/"
 
     lambdaCV = [1e-4]
     epsilonCV = [1e-3]
@@ -110,7 +110,7 @@ def main():
     splitCV = [1];
     
     load_classifier = False
-    save_classifier = False
+    save_classifier = True
     
     print_exp_detail(categories, lambdaCV, epsilonCV, scaleCV, tradeoffCV,\
                      initializedType, test_suffix, hnorm, numWords,\
@@ -120,16 +120,17 @@ def main():
         trainval_batch_feature_mainfolder = os.path.join(trainval_batch_json_main_folder, str(scale))
         test_batch_feature_mainfolder = os.path.join(test_batch_json_main_folder, str(scale))
         if exp_type == "fulltest":
-            train_batch_features = reader.combineFeatureJson(trainval_batch_feature_mainfolder)
-            test_batch_features = reader.combineFeatureJson(test_batch_feature_mainfolder)
+            train_batch_features = reader.combineFeatureJson(trainval_batch_feature_mainfolder, False)
+            test_batch_features = reader.combineFeatureJson(test_batch_feature_mainfolder, False)
         elif exp_type == "validation":
 #             train_batch_features = json.load(open("/local/wangxin/Data/ferrari_gaze/m_2048_trainval_batch_feature/single_json/90.json"))
 #             test_batch_features = train_batch_features
-            train_batch_features = reader.combineFeatureJson(trainval_batch_feature_mainfolder)
+            train_batch_features = reader.combineFeatureJson(trainval_batch_feature_mainfolder, False)
             test_batch_features = train_batch_features            
 #             train_batch_features = reader.combineFeatureJson(trainval_batch_json_folder)
 #             test_batch_features = train_batch_features
-            
+        else: 
+            raise NotImplementedError    
             
         for category in categories:
             for split in scaleCV:
@@ -159,7 +160,7 @@ def main():
                             lssvm_name = get_LSSVM_name(category, scale, lbd, epsilon, tradeoff,\
                                                         initializedType, test_suffix, hnorm, numWords,\
                                                         optim, epochsLatentMax, epochsLatentMin,\
-                                                        cpmax, cpmin, split)
+                                                        cpmax, cpmin, split,exp_type)
                             
                             classifier_folder = os.path.join(resDir, 'classifier/')
                             myIO.basic.check_folder(classifier_folder)
@@ -192,10 +193,19 @@ def main():
                                     print "saving lssvm:%s"%classifier_fp 
                                     with  open(classifier_fp, 'w') as lssvm_path:
                                         pickle.dump(lsvm,lssvm_path)
-                            train_ap = getTestResults(lsvm, example_train, "train", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
-                            val_ap = getTestResults(lsvm, example_test, "val", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
+                            
+                            if exp_type == "validation":
+                                train_ap = getTestResults(lsvm, example_train, "train", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
+                                test_ap = getTestResults(lsvm, example_test, "val", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
+                            elif exp_type == "fulltest":
+                                train_ap = getTestResults(lsvm, example_train, "trainval", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
+                                test_ap = getTestResults(lsvm, example_test, "test", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
+                            
+                            result_file = open(os.path.join(resDir, resultFileName),'w+')
+                            result_file.write(' '.join([category, str(tradeoff), str(scale), str(lbd), str(epsilon), str(test_ap), str(train_ap)]))
+                            result_file.close()
                             print "train ap: %f"%train_ap
-                            print "val ap: %f"%val_ap
+                            print "test ap: %f"%test_ap
                             print "***************************************************"
                                     
                                         
@@ -213,5 +223,6 @@ if __name__ == "__main__":
     from myTools.STrainingList import STrainingList 
     from LSSVMMulticlassFastBagMILET import LSSVMMulticlassFastBagMILET
     
-    import cProfile
-    cProfile.run('main()')
+#     import cProfile
+#     cProfile.run('main()')
+    main()

@@ -90,7 +90,7 @@ def readBatchBagMIL(example_filepath, batch_features, dim, bias, dataSource, sca
         with open(example_filepath) as ef:
             for example in ef:
                 example_list.append(readBatchFeatureExample(example.strip(), batch_features, bias, scale))
-    return example_list[:20]
+    return example_list
 
 def combineFeatureJsonIntoOneFile(batch_feature_mainfolders,scales):
     """combine seperate jsons together, use only once!!!!"""
@@ -108,15 +108,15 @@ def combineFeatureJsonIntoOneFile(batch_feature_mainfolders,scales):
             
             json.dump(final_json,open(os.path.join(batch_feature_folder,'all.json'),'w'))
 
-def combineFeatureJson(batch_feature_mainfolder, scale):
+def combineFeatureJson(batch_feature_folder, verbose):
     """combine seperate jsons together, use only once!!!!"""
     final_json = collections.defaultdict(lambda: collections.defaultdict(lambda: None))
-    batch_feature_folder = os.path.join(batch_feature_mainfolder,str(scale))
     for cnt,feature_fp in enumerate(os.listdir(batch_feature_folder)):
-        print cnt
         feature_json = readFeatureJson(os.path.join(batch_feature_folder, feature_fp))
         for k, v in feature_json.items():
             for k2, v2 in v.items():
+                if verbose:
+                    print k, k2, v2
                 final_json[k][k2] = v2
     
     return final_json
