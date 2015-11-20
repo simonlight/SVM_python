@@ -128,7 +128,7 @@ def main():
         test_batch_feature_mainfolder = os.path.join(test_batch_json_main_folder, str(scale))
         if exp_type == "fulltest":
             train_batch_features = reader.combineFeatureJson(trainval_batch_feature_mainfolder, False)
-            test_batch_features = reader.combineFeatureJson(test_batch_feature_mainfolder, False)
+#             test_batch_features = reader.combineFeatureJson(test_batch_feature_mainfolder, False)
         elif exp_type == "validation":
 #             train_batch_features = json.load(open("/local/wangxin/Data/ferrari_gaze/m_2048_trainval_batch_feature/single_json/90.json"))
 #             test_batch_features = train_batch_features
@@ -146,21 +146,21 @@ def main():
                 if exp_type == "fulltest":
                     train_example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, "trainval",test_suffix)
                     print train_example_file_fp
-                    test_example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, "test",test_suffix)
+#                     test_example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, "test",test_suffix)
 
                 elif exp_type == "validation":
                     train_example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, "train",test_suffix)
                     test_example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, "val",test_suffix)
                 
                 listTrain = reader.readBatchBagMIL(train_example_file_fp,train_batch_features, numWords, True, dataSource, scale)
-                listTest = reader.readBatchBagMIL(test_example_file_fp,test_batch_features, numWords, True, dataSource, scale)
+#                 listTest = reader.readBatchBagMIL(test_example_file_fp,test_batch_features, numWords, True, dataSource, scale)
                 
                 for epsilon in epsilonCV:
                     for lbd in lambdaCV:
                         for tradeoff in tradeoffCV:
                             
                             example_train =  STrainingList(listTrain)
-                            example_test = STrainingList(listTest)
+#                             example_test = STrainingList(listTest)
                             
                             
                             ###############
@@ -203,19 +203,19 @@ def main():
                             
                             if exp_type == "validation":
                                 train_ap = getTestResults(lsvm, example_train, "train", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
-                                test_ap = getTestResults(lsvm, example_test, "val", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
-                                result_file = open(os.path.join(resDir, resultFileName),'w+')
-                                result_file.write(' '.join([category, str(tradeoff), str(scale), str(lbd), str(epsilon), str(test_ap), str(train_ap)]))
-                                result_file.close()
+#                                 test_ap = getTestResults(lsvm, example_test, "val", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
+#                                 result_file = open(os.path.join(resDir, resultFileName),'w+')
+#                                 result_file.write(' '.join([category, str(tradeoff), str(scale), str(lbd), str(epsilon), str(test_ap), str(train_ap)]))
+#                                 result_file.close()
                                 print "train ap: %f"%train_ap
-                                print "test ap: %f"%test_ap
+#                                 print "test ap: %f"%test_ap
                                 print "***************************************************"
                             elif exp_type == "fulltest":
                                 train_ap = getTestResults(lsvm, example_train, "trainval", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
                                 result_file = open(os.path.join(resDir, resultFileName),'w+')
                                 result_file.write(' '.join([category, str(tradeoff), str(scale), str(lbd), str(epsilon), str(train_ap)]))
                                 result_file.close()
-                                test_ap = writeResultScore(lsvm, example_test, "test", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
+#                                 test_ap = writeResultScore(lsvm, example_test, "test", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
                             
                            
                                     
