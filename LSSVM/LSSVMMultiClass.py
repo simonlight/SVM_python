@@ -93,9 +93,9 @@ def main():
     example_root_folder = os.path.join(sourceDir, "voc_example_file_10_categories")
     exp_type = "fulltest"
 #     lossPath = '/home/xin/ETLoss_dict/'
-    resultFileName = "outputdebug_w.txt"
-    detailFolder= "outputdebug_w/"
-
+    resultFileName = "bestgamma_on_test.txt"
+    detailFolder= "bestgamma_on_test"
+    classifier_folder_name = "bestgamma_on_test"
     lambdaCV = [1e-4]
     epsilonCV = [1e-3]
     print sys.argv
@@ -171,7 +171,7 @@ def main():
                                                         optim, epochsLatentMax, epochsLatentMin,\
                                                         cpmax, cpmin, split,exp_type)
                             
-                            classifier_folder = os.path.join(resDir, 'classifier/')
+                            classifier_folder = os.path.join(resDir, classifier_folder_name)
                             myIO.basic.check_folder(classifier_folder)
                             classifier_fp = os.path.join(classifier_folder, lssvm_name)
                             
