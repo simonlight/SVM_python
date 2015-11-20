@@ -98,9 +98,9 @@ def main():
 
     lambdaCV = [1e-4]
     epsilonCV = [1e-3]
-    scaleCV = [int(sys.argv[2])]    
     categories = [sys.argv[1]]
-    tradeoffCV = [0.1]
+    scaleCV = [int(sys.argv[2])]    
+    tradeoffCV = [sys.argv[3]]
     
     initializedType = "noInit"
     test_suffix="";
