@@ -127,7 +127,9 @@ def main():
         trainval_batch_feature_mainfolder = os.path.join(trainval_batch_json_main_folder, str(scale))
         test_batch_feature_mainfolder = os.path.join(test_batch_json_main_folder, str(scale))
         if exp_type == "fulltest":
-            train_batch_features = reader.combineFeatureJson(trainval_batch_feature_mainfolder, False)
+            train_batch_features = json.load(open("/home/wangxin/Data/ferrari_gaze/m_2048_trainval_batch_feature/single_json/"+str(scale)+".json"))
+
+#             train_batch_features = reader.combineFeatureJson(trainval_batch_feature_mainfolder, False)
 #             test_batch_features = reader.combineFeatureJson(test_batch_feature_mainfolder, False)
         elif exp_type == "validation":
 #             train_batch_features = json.load(open("/local/wangxin/Data/ferrari_gaze/m_2048_trainval_batch_feature/single_json/90.json"))
