@@ -11,11 +11,12 @@ def getTestResults(lssvm, examples,typ, resDir,detailFolder, tradeoff, scale, ep
     ap = lssvm.testAPRegion(examples,detection_fp)
     return ap
 
-def writeResultScore(lssvm, examples,typ, resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True):
+def writeResultScore(lssvm, examples,typ, resDir,detailFolder, tradeoff, scale, epsilon, lbd, category):
     score_folder = os.path.join(resDir,detailFolder)
     myIO.basic.check_folder(score_folder)
     score_fp = os.path.join(score_folder,'_'.join(["score_"+typ, str(tradeoff), str(scale), str(epsilon), str(lbd), category+".txt"]))    
     lssvm.getTestScore(examples, score_fp)
+    print "write scores to file:%s"%score_fp
 
 def print_exp_detail(categories, lambdaCV, epsilonCV, scaleCV, tradeoffCV,
                      initializedType, test_suffix, hnorm, numWords,
@@ -70,14 +71,14 @@ def main():
 #     gazeType = "stefan"
 
 #     # big ferrari
-    sourceDir = "/home/wangxin/Data/ferrari_gaze/"
-    resDir = "/home/wangxin/results/ferrari_gaze/std_et/"
-    gazeType = "ferrari";
+#     sourceDir = "/home/wangxin/Data/ferrari_gaze/"
+#     resDir = "/home/wangxin/results/ferrari_gaze/std_et/"
+#     gazeType = "ferrari";
         
 #     local ferrari
-#     sourceDir = "/local/wangxin/Data/ferrari_gaze/";
-#     resDir = "/local/wangxin/results/ferrari_gaze/std_et/";
-#     gazeType = "ferrari"
+    sourceDir = "/local/wangxin/Data/ferrari_gaze/";
+    resDir = "/local/wangxin/results/ferrari_gaze/std_et/";
+    gazeType = "ferrari"
     
     # local test laptop
 #     sourceDir='/home/xin/'
@@ -91,11 +92,14 @@ def main():
     trainval_batch_json_main_folder = os.path.join(sourceDir, 'm_2048_trainval_batch_feature')
     test_batch_json_main_folder = os.path.join(sourceDir, 'm_2048_test_batch_feature')
     example_root_folder = os.path.join(sourceDir, "voc_example_file_10_categories")
-    exp_type = "fulltest"
+    exp_type = "validation"
 #     lossPath = '/home/xin/ETLoss_dict/'
-    resultFileName = "bestgamma_on_test.txt"
-    detailFolder= "bestgamma_on_test"
-    classifier_folder_name = "bestgamma_on_test"
+#     resultFileName = "bestgamma_on_test.txt"
+#     detailFolder= "bestgamma_on_test"
+#     classifier_folder_name = "bestgamma_on_test"
+    resultFileName = "test_voc_server.txt"
+    detailFolder= "test_voc_server"
+    classifier_folder_name = "test_voc_server"
     lambdaCV = [1e-4]
     epsilonCV = [1e-3]
     print sys.argv
@@ -116,7 +120,7 @@ def main():
     cpmin = 2;
     splitCV = [1];
     
-    load_classifier = False
+    load_classifier = True
     save_classifier = True
     
     print_exp_detail(categories, lambdaCV, epsilonCV, scaleCV, tradeoffCV,\
@@ -152,20 +156,13 @@ def main():
 
                 elif exp_type == "validation":
                     train_example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, "train",test_suffix)
-                    test_example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, "val",test_suffix)
                 
                 listTrain = reader.readBatchBagMIL(train_example_file_fp,train_batch_features, numWords, True, dataSource, scale)
-#                 listTest = reader.readBatchBagMIL(test_example_file_fp,test_batch_features, numWords, True, dataSource, scale)
                 
                 for epsilon in epsilonCV:
                     for lbd in lambdaCV:
                         for tradeoff in tradeoffCV:
                             
-                            example_train =  STrainingList(listTrain)
-#                             example_test = STrainingList(listTest)
-                            
-                            
-                            ###############
                             lssvm_name = get_LSSVM_name(category, scale, lbd, epsilon, tradeoff,\
                                                         initializedType, test_suffix, hnorm, numWords,\
                                                         optim, epochsLatentMax, epochsLatentMin,\
@@ -174,12 +171,14 @@ def main():
                             classifier_folder = os.path.join(resDir, classifier_folder_name)
                             myIO.basic.check_folder(classifier_folder)
                             classifier_fp = os.path.join(classifier_folder, lssvm_name)
+                            classifier_fp = "/home/wangxin/sofa_90_0.0001_0.001_0.1_noInit__False_2048_1_500_2_5000_2_90_fulltest_.lssvm"
                             
                             print "***************************************************"
                             if load_classifier and os.path.exists(classifier_fp):
                                 print "loading classifier:%s"%classifier_fp
                                 lsvm = pickle_LSSVM(classifier_fp)
                             else:
+                                example_train =  STrainingList(listTrain)
                                 print "training classifier:%s"%classifier_fp
                                 lsvm = LSSVMMulticlassFastBagMILET()
                                 lsvm.setOptim(optim);
@@ -204,17 +203,27 @@ def main():
                                         pickle.dump(lsvm,lssvm_path)
                             
                             if exp_type == "validation":
-                                train_ap = getTestResults(lsvm, example_train, "train", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
-#                                 test_ap = getTestResults(lsvm, example_test, "val", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
+                                
+                                test_batch_features = train_batch_features            
+                                test_example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, "val",test_suffix)
+                                listTest = reader.readBatchBagMIL(test_example_file_fp,test_batch_features, numWords, True, dataSource, scale)
+                                example_test = STrainingList(listTest)
+
+#                                 train_ap = getTestResults(lsvm, example_train, "train", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
+                                test_ap = getTestResults(lsvm, example_test, "val", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
+                                writeResultScore(lsvm, example_test, "val", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category)
+                                
 #                                 result_file = open(os.path.join(resDir, resultFileName),'w+')
 #                                 result_file.write(' '.join([category, str(tradeoff), str(scale), str(lbd), str(epsilon), str(test_ap), str(train_ap)]))
 #                                 result_file.close()
-                                print "train ap: %f"%train_ap
-#                                 print "test ap: %f"%test_ap
+#                                 
+#                                 print "train ap: %f"%train_ap
+                                print "test ap: %f"%test_ap
                                 print "***************************************************"
                             elif exp_type == "fulltest":
+                                test_batch_features = reader.combineFeatureJson(test_batch_feature_mainfolder, False)
                                 train_ap = getTestResults(lsvm, example_train, "trainval", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
-                                result_file = open(os.path.join(resDir, resultFileName),'w+')
+                                result_file = open(os.path.join(resDir, resultFileName),'a+')
                                 result_file.write(' '.join([category, str(tradeoff), str(scale), str(lbd), str(epsilon), str(train_ap)]))
                                 result_file.close()
 #                                 test_ap = writeResultScore(lsvm, example_test, "test", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
