@@ -14,4 +14,4 @@ k='oarsub -p "host='"'"'big$1'"'"' " -l "nodes=1/core=1,walltime=500:0:0" --noti
 
 end='"'
 space=' '
-eval $k
+eval $k$end
