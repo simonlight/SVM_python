@@ -90,9 +90,9 @@ def readBatchBagMIL(example_filepath, batch_features, dim, bias, dataSource, sca
         with open(example_filepath) as ef:
             for example in ef:
                 example_list.append(readBatchFeatureExample(example.strip(), batch_features, bias, scale))
-    return example_list
+    return example_list[:20]
 
-def combineFeatureJson(batch_feature_mainfolders,scales):
+def combineFeatureJsonIntoOneFile(batch_feature_mainfolders,scales):
     """combine seperate jsons together, use only once!!!!"""
     for batch_feature_mainfolder in batch_feature_mainfolders:
         for scale in scales:
@@ -108,10 +108,23 @@ def combineFeatureJson(batch_feature_mainfolders,scales):
             
             json.dump(final_json,open(os.path.join(batch_feature_folder,'all.json'),'w'))
 
+def combineFeatureJson(batch_feature_mainfolder, scale):
+    """combine seperate jsons together, use only once!!!!"""
+    final_json = collections.defaultdict(lambda: collections.defaultdict(lambda: None))
+    batch_feature_folder = os.path.join(batch_feature_mainfolder,str(scale))
+    for cnt,feature_fp in enumerate(os.listdir(batch_feature_folder)):
+        print cnt
+        feature_json = readFeatureJson(os.path.join(batch_feature_folder, feature_fp))
+        for k, v in feature_json.items():
+            for k2, v2 in v.items():
+                final_json[k][k2] = v2
+    
+    return final_json
+
 if __name__ == '__main__':
 #     import sys
 #     sys.path.append("")
-    #combineFeatureJson(["/local/wangxin/Data/ferrari_gaze/m_2048_test_batch_feature/", "/local/wangxin/Data/ferrari_gaze/m_2048_trainval_batch_feature/"], [90])
+    #combineFeatureJsonIntoOneFile(["/local/wangxin/Data/ferrari_gaze/m_2048_test_batch_feature/", "/local/wangxin/Data/ferrari_gaze/m_2048_trainval_batch_feature/"], [90])
 
     
     pass
