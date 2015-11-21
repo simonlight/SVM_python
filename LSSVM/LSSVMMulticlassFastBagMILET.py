@@ -76,7 +76,7 @@ class LSSVMMulticlassFastBagMILET(LSSVMMulticlassFastET):
         label_value_list = []
         for ex in examples:
             yp, hp = self.prediction(ex.input)
-            score = self.valueOf(ex.input.x, yp, hp, self.w)
+            score = self.valueOf(self.w[yp],self.psi(ex.input.x,hp))
             y = ex.output
             label_value_list.append(self.getAPElement(y, yp, score))
         return metric.getAP(label_value_list)
