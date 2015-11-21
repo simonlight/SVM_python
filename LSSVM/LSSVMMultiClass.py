@@ -199,7 +199,7 @@ def main():
     trainval_single_json_folder = os.path.join(sourceDir, "m_2048_trainval_batch_feature","single_json")
     test_single_json_folder = os.path.join(sourceDir, "m_2048_test_batch_feature","single_json")
     
-    exp_description = "debug"
+    exp_description = "cv_fulltrain_halfval"
     result_file_fp = os.path.join(resDir,exp_description, "ap_summary.txt")
     detection_folder= os.path.join(resDir,exp_description,"metric")
     myIO.basic.check_folder(detection_folder)
