@@ -79,7 +79,7 @@ def readBatchFeatureExample(example, batch_features, bias, scale):
 
     return TrainingSample.TrainingSample(BagMIL.BagMIL(filename, label, features), label)
 
-def readBatchBagMIL(example_filepath, batch_features, bias, dataSource, scale):
+def readBatchBagMIL(example_filepath, batch_features, bias,  scale):
     print example_filepath
     if not os.path.exists(example_filepath):
         print "%s not found"%example_filepath
