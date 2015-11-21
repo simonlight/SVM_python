@@ -195,6 +195,8 @@ def main():
     trainval_batch_json_main_folder = os.path.join(sourceDir, 'm_2048_trainval_batch_feature')
     test_batch_json_main_folder = os.path.join(sourceDir, 'm_2048_test_batch_feature')
     example_root_folder = os.path.join(sourceDir, "voc_example_file_10_categories")
+    trainval_single_json_folder = os.path.join(sourceDir, "m_2048_trainval_batch_feature","single_json")
+    test_single_json_folder = os.path.join(sourceDir, "m_2048_test_batch_feature","single_json")
     
     exp_description = "debug"
     result_file_fp = os.path.join(resDir,exp_description+".txt")
@@ -238,7 +240,7 @@ def main():
 #         trainval_batch_feature_mainfolder = os.path.join(trainval_batch_json_main_folder, str(scale))
 #         test_batch_feature_mainfolder = os.path.join(test_batch_json_main_folder, str(scale))
 
-        train_batch_features = json.load(open("/home/wangxin/Data/ferrari_gaze/m_2048_trainval_batch_feature/single_json/"+str(scale)+".json"))
+        train_batch_features = json.load(open(trainval_single_json_folder+str(scale)+".json"))
         
         for category in categories:
             for split in scaleCV:
