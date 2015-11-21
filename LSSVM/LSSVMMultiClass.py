@@ -3,6 +3,8 @@ Created on Nov 14, 2015
 
 @author: xin
 '''
+
+
 def getTestResults(lssvm, examples,typ, resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True):
     if recording:
         detection_folder = os.path.join(resDir,detailFolder)
