@@ -199,12 +199,12 @@ def main():
     test_single_json_folder = os.path.join(sourceDir, "m_2048_test_batch_feature","single_json")
     
     exp_description = "debug"
-    result_file_fp = os.path.join(resDir,exp_description+".txt")
-    detection_folder= os.path.join(resDir,exp_description+"_metric")
+    result_file_fp = os.path.join(resDir,exp_description, "ap_summary.txt")
+    detection_folder= os.path.join(resDir,exp_description,"metric")
     myIO.basic.check_folder(detection_folder)
-    score_folder= os.path.join(resDir,exp_description+"_score")
+    score_folder= os.path.join(resDir,exp_description,"score")
     myIO.basic.check_folder(score_folder)
-    classifier_folder = os.path.join(resDir,exp_description+"_classifier")
+    classifier_folder = os.path.join(resDir,exp_description, "classifier")
     myIO.basic.check_folder(classifier_folder)
     
     #parameters
