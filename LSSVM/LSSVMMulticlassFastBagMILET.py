@@ -29,9 +29,9 @@ class LSSVMMulticlassFastBagMILET(LSSVMMulticlassFastET):
     def getGazeRatio(self, x, h, gazeType):
         if gazeType == "ferrari":
             if self.scale == 100:
-                gaze_ratio = self.lossMap[str(self.scale)][x.name+'.txt'][str(self.className)][str(h)]
+                gaze_ratio = self.lossMap[str(self.scale)][x.name+'.txt'][str(self.category)][str(h)]
             else:
-                gaze_ratio = self.lossMap[str(self.scale)][x.name][str(self.className)][str(h)]
+                gaze_ratio = self.lossMap[str(self.scale)][x.name][str(self.category)][str(h)]
             return gaze_ratio[0]
         elif gazeType == "stefan":
             feature_path = x.features[h].split('/')
@@ -72,7 +72,7 @@ class LSSVMMulticlassFastBagMILET(LSSVMMulticlassFastET):
         elif yp==0:
             return -score
     
-    def testAP(self, examples):
+    def getAP(self, examples):
         label_value_list = []
         for ex in examples:
             yp, hp = self.prediction(ex.input)
@@ -81,7 +81,7 @@ class LSSVMMulticlassFastBagMILET(LSSVMMulticlassFastET):
             label_value_list.append(self.getAPElement(y, yp, score))
         return metric.getAP(label_value_list)
     
-    def testAPRegion(self, examples, detection_fp):
+    def writeDetectionResult(self, examples, detection_fp):
         label_value_list = []
         detection_file = open(detection_fp,"w")
         for ex in examples:
@@ -93,7 +93,7 @@ class LSSVMMulticlassFastBagMILET(LSSVMMulticlassFastET):
         detection_file.close()
         return metric.getAP(label_value_list)
     
-    def getTestScore(self, examples, score_fp):
+    def writeScore(self, examples, score_fp):
         score_file = open(score_fp,"w")
         for ex in examples:
             yp, hp = self.prediction(ex.input)
