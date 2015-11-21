@@ -59,11 +59,11 @@ def writeScore(lssvm, examples, example_typ, score_folder):
     print "write scores to file:%s"%score_fp
 
 def get_LSSVM_name(category, scale, lbd, epsilon, tradeoff,
-                   initializedType, test_suffix, hnorm, numWords,
+                   initializedType, hnorm, numWords,
                    optim, epochsLatentMax, epochsLatentMin,
                    cpmax, cpmin, split, exp_type):
     return '_'.join([str(ele) for ele in [category, scale, lbd, epsilon, tradeoff,
-                   initializedType, test_suffix, hnorm, numWords,
+                   initializedType, hnorm, numWords,
                    optim, epochsLatentMax, epochsLatentMin,
                    cpmax, cpmin, split, exp_type,'.lssvm']])
     
