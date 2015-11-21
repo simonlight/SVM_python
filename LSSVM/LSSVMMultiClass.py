@@ -104,7 +104,7 @@ def evaluation_phase(lssvm, exp_type, example_train, train_batch_features, examp
     else:
         raise NotImplementedError
     #Test results
-    test_ap = lssvm.getAP(lssvm, example_test)
+    test_ap = lssvm.getAP(example_test)
     
     #Result Summary
     writeAP(lssvm, result_file_fp, test_ap, train_ap)
@@ -125,16 +125,16 @@ def train_phase(resDir, classifier_folder,\
                                 initializedType, hnorm, numWords,\
                                 optim, epochsLatentMax, epochsLatentMin,\
                                 cpmax, cpmin, split,exp_type)
-                            
     classifier_fp = os.path.join(classifier_folder, lssvm_name)
+
+    example_train =  STrainingList(listTrain)
     
     print "***************************************************"
-
+    
     if load_classifier and os.path.exists(classifier_fp):
         print "loading classifier:%s"%classifier_fp
         lssvm = pickle_LSSVM(classifier_fp)
     else:
-        example_train =  STrainingList(listTrain)
         print "training classifier:%s"%classifier_fp
         
         lssvm = LSSVMMulticlassFastBagMILET()
