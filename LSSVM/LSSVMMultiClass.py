@@ -44,6 +44,7 @@ def writeAP(lssvm, result_file_fp, test_ap, train_ap):
     result_file = open(result_file_fp, 'a+')
     result_file.write(' '.join([lssvm.category, str(lssvm.tradeoff), str(lssvm.scale),
                                 str(lssvm.lbd), str(lssvm.epsilon), str(test_ap), str(train_ap)]))
+    result_file.write('\n')
     result_file.close()
     
 def writeDetectionResult(lssvm, examples, example_typ, detection_folder):
@@ -285,4 +286,5 @@ if __name__ == "__main__":
     
 #     import cProfile
 #     cProfile.run('main()')
+
     main()
