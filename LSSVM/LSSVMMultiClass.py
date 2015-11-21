@@ -78,32 +78,38 @@ def pickle_LSSVM(classifier_fp):
     with open(classifier_fp) as lssvm:
         return pickle.load(lssvm)
 
-def getTestExample(lssvm, example_root_folder, test_batch_features, example_type):
-    test_example_file_fp = get_VOC_examplefile_fp(example_root_folder, lssvm.category, example_type)
-    listTest = reader.readBatchBagMIL(test_example_file_fp,test_batch_features, True, lssvm.scale)
-    example_test = STrainingList(listTest)
-    return example_test
-    
-def evaluation_phase(lssvm, exp_type, example_train, train_batch_features, example_root_folder,\
-                     result_file_fp):
-    #Training ap results
-    train_ap = lssvm.getAP(example_train)
-    
+def getExample(category, scale, example_root_folder, batch_features, example_type):
+    example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, example_type)
+    listExample = reader.readBatchBagMIL(example_file_fp, batch_features, True, scale)
+    example = STrainingList(listExample)
+    return example
+
+def generate_examples(category, scale, example_root_folder, train_batch_features, exp_type):
     if exp_type == "validation":
+        example_train = getExample(category, scale, example_root_folder, train_batch_features, "train")
         test_batch_features = train_batch_features
-        example_test = getTestExample(lssvm, example_root_folder, test_batch_features, "val")
+        example_test = getExample(category, scale, example_root_folder, test_batch_features, "val")
+
+    elif exp_type == "trainval_valtest":
+        example_train = getExample(category, scale, example_root_folder, train_batch_features, "train")
+        test_batch_features = train_batch_features
+        example_test = getExample(category, scale, example_root_folder, test_batch_features, "val_val")
     
     elif exp_type == "fulltest":
+        example_train = getExample(category, scale, example_root_folder, train_batch_features, "tarinval")
         #TODO
-#         test_batch_features = reader.combineFeatureJson(test_batch_feature_mainfolder, False)
-        example_test = getTestExample(lssvm, example_root_folder, test_batch_features, "test")
-        
-    elif exp_type == "trainval_valtest":
-        test_batch_features = train_batch_features
-        example_test = getTestExample(lssvm, example_root_folder, test_batch_features, "val_val")
+#         test_batch_features = reader.combineFeatureJson(test_batch_json_main_folder, False)
+        example_test = getExample(category, scale, example_root_folder, test_batch_features, "test")
     
     else:
         raise NotImplementedError
+    return example_train, example_test
+
+
+def evaluation_phase(lssvm, example_train, example_test, result_file_fp):
+    #Training ap results
+    train_ap = lssvm.getAP(example_train)
+    
     #Test results
     test_ap = lssvm.getAP(example_test)
     
@@ -120,7 +126,7 @@ def train_phase(resDir, classifier_folder,\
                 initializedType, hnorm, numWords,\
                 optim, epochsLatentMax, epochsLatentMin,\
                 cpmax, cpmin, split,exp_type,\
-                load_classifier, listTrain, gazeType, lossPath, save_classifier):
+                load_classifier, example_train, gazeType, lossPath, save_classifier):
     
     lssvm_name = get_LSSVM_name(category, scale, lbd, epsilon, tradeoff,\
                                 initializedType, hnorm, numWords,\
@@ -128,8 +134,6 @@ def train_phase(resDir, classifier_folder,\
                                 cpmax, cpmin, split,exp_type)
     classifier_fp = os.path.join(classifier_folder, lssvm_name)
 
-    example_train =  STrainingList(listTrain)
-    
     print "***************************************************"
     
     if load_classifier and os.path.exists(classifier_fp):
@@ -160,7 +164,7 @@ def train_phase(resDir, classifier_folder,\
             with  open(classifier_fp, 'w') as lssvm_path:
                 pickle.dump(lssvm,lssvm_path)
     
-    return lssvm, example_train
+    return lssvm
 
 def main():
     
@@ -211,9 +215,9 @@ def main():
     #parameters
     lambdaCV = [1e-4]
     epsilonCV = [1e-3]
-#     categories = ["dog", "cat", "motorbike"]
+    categories = ["dog", "cat", "motorbike"]
 #     categories = ["boat","aeroplane","horse"]
-    categories = ["cow","sofa","diningtable","bicycle"]
+#     categories = ["cow","sofa","diningtable","bicycle"]
 #     categories = [sys.argv[1]]
     scaleCV = [30]    
 #     scaleCV = [int(sys.argv[2])]    
@@ -243,32 +247,25 @@ def main():
 #         trainval_batch_feature_mainfolder = os.path.join(trainval_batch_json_main_folder, str(scale))
 #         test_batch_feature_mainfolder = os.path.join(test_batch_json_main_folder, str(scale))
 
-        train_batch_features = json.load(open(os.path.join(trainval_single_json_folder,str(scale)+".json")))
-        
         for category in categories:
             for split in scaleCV:
-#                 listTrain = BagReader.readIndividualBagMIL(get_example_file_fp(sourceDir, scale, category, "train",test_suffix), numWords, True, dataSource)
-#                 listVal = BagReader.readIndividualBagMIL(get_example_file_fp(sourceDir, scale, category, "val",test_suffix), numWords, True, dataSource)
-                if exp_type == "fulltest":
-                    train_example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, "trainval")
-#                     test_example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, "test",test_suffix)
-
-                elif exp_type == "validation" or exp_type == "trainval_valtest":
-                    train_example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, "train")
-                
-                listTrain = reader.readBatchBagMIL(train_example_file_fp,train_batch_features, True, scale)
+                # save memory
+                train_batch_features = json.load(open(os.path.join(trainval_single_json_folder,str(scale)+".json")))
+    
+                example_train, example_test = generate_examples(category, scale, example_root_folder, train_batch_features)
+                               
+                                        
                 for epsilon in epsilonCV:
                     for lbd in lambdaCV:
                         for tradeoff in tradeoffCV:
-                            lssvm, example_train = train_phase(resDir, classifier_folder,\
+                            lssvm = train_phase(resDir, classifier_folder,\
                                                 category, scale, lbd, epsilon, tradeoff,\
                                                 initializedType, hnorm, numWords,\
                                                 optim, epochsLatentMax, epochsLatentMin,\
                                                 cpmax, cpmin, split,exp_type,\
-                                                load_classifier, listTrain, gazeType, lossPath, save_classifier)
+                                                load_classifier, example_train, gazeType, lossPath, save_classifier)
                             
-                            evaluation_phase(lssvm, exp_type, example_train, train_batch_features,\
-                                             example_root_folder, result_file_fp)
+                            evaluation_phase(lssvm, example_train, example_test, result_file_fp)
                                                        
                                     
                                         
