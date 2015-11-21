@@ -211,8 +211,8 @@ def main():
     #parameters
     lambdaCV = [1e-4]
     epsilonCV = [1e-3]
-    categories = ["dog", "cat", "motorbike"]
-#     categories = ["boat","aeroplane","horse"]
+#     categories = ["dog", "cat", "motorbike"]
+    categories = ["boat","aeroplane","horse"]
 #     categories = ["cow","sofa","diningtable","bicycle"]
 #     categories = [sys.argv[1]]
     scaleCV = [40]    
