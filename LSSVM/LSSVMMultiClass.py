@@ -3,24 +3,9 @@ Created on Nov 14, 2015
 
 @author: xin
 '''
-        
-def getTestResults(lssvm, examples,typ, resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True):
-    if recording:
-        detection_folder = os.path.join(resDir,detailFolder)
-        myIO.basic.check_folder(detection_folder)
-        detection_fp = os.path.join(detection_folder,'_'.join(["metric_"+typ, str(tradeoff), str(scale), str(epsilon), str(lbd), category+".txt"])) 
-    ap = lssvm.testAPRegion(examples,detection_fp)
-    return ap
-
-def writeResultScore(lssvm, examples, typ, resDir,detailFolder, tradeoff, scale, epsilon, lbd, category):
-    score_folder = os.path.join(resDir,detailFolder)
-    myIO.basic.check_folder(score_folder)
-    score_fp = os.path.join(score_folder,'_'.join(["score_"+typ, str(tradeoff), str(scale), str(epsilon), str(lbd), category+".txt"]))    
-    lssvm.getTestScore(examples, score_fp)
-    print "write scores to file:%s"%score_fp
 
 def print_exp_detail(categories, lambdaCV, epsilonCV, scaleCV, tradeoffCV,
-                     initializedType, test_suffix, hnorm, numWords,
+                     initializedType, hnorm, numWords,
                      optim, epochsLatentMax, epochsLatentMin, cpmax, cpmin, splitCV, exp_type):
     print "Experiment detail:"
     print "categories \t%s"%str(categories),
@@ -29,16 +14,33 @@ def print_exp_detail(categories, lambdaCV, epsilonCV, scaleCV, tradeoffCV,
     print "\tscale \t\t%s"%str(scaleCV)
     print "tradeoff \t%s"%str(tradeoffCV),
     print "\t\tinitializedType\t%s"%initializedType
-    print "test_suffix \t%s"%test_suffix,
-    print "\t\thnorm \t\t%s"%str(hnorm)
     print "numWords \t%d"%numWords,
-    print "\t\toptim \t\t%d"%optim
+    print "\t\thnorm \t\t%s"%str(hnorm)
     print "epochsLatentMax\t%d"%epochsLatentMax,
-    print "\t\tepochsLatentMin\t%d"%epochsLatentMin
+    print "\t\toptim \t\t%d"%optim
     print "cpmax \t\t%s"%cpmax,
-    print "\t\tcpmin \t\t%s"%cpmin
+    print "\t\tepochsLatentMin\t%d"%epochsLatentMin
     print "splitCV \t%s"%str(splitCV),
-    print "\t exp_type \t%s"%str(exp_type)
+    print "\t\tcpmin \t\t%s"%cpmin
+    print "exp_type \t%s"%str(exp_type),
+
+def writeAP(lssvm, result_file_fp, test_ap, train_ap):
+    result_file = open(result_file_fp, 'a+')
+    result_file.write(' '.join([lssvm.category, str(lssvm.tradeoff), str(lssvm.scale),
+                                str(lssvm.lbd), str(lssvm.epsilon), str(test_ap), str(train_ap)]))
+    result_file.close()
+    
+def writeDetectionResult(lssvm, examples, example_typ, detection_folder):
+    detection_fp = os.path.join(detection_folder,'_'.join(["metric_"+example_typ, str(lssvm.tradeoff),
+                                str(lssvm.scale), str(lssvm.epsilon), str(lssvm.lbd), lssvm.category+".txt"])) 
+    ap = lssvm.writeDetectionResult(examples,detection_fp)
+    return ap
+
+def writeScore(lssvm, examples, example_typ, score_folder):
+    score_fp = os.path.join(score_folder,'_'.join(["score_"+example_typ, str(lssvm.tradeoff), str(lssvm.scale), 
+                            str(lssvm.epsilon), str(lssvm.lbd), lssvm.category+".txt"]))    
+    lssvm.writeScore(examples, score_fp)
+    print "write scores to file:%s"%score_fp
 
 def get_LSSVM_name(category, scale, lbd, epsilon, tradeoff,
                    initializedType, test_suffix, hnorm, numWords,
@@ -52,62 +54,62 @@ def get_LSSVM_name(category, scale, lbd, epsilon, tradeoff,
 def get_thibaut_examplefile_fp(sourceDir,scale, category, example_typ, test_suffix):
     return os.path.join(sourceDir, "example_files", str(scale),'_'.join([category,example_typ, 'scale',str(scale),'matconvnet_m_2048_layer_20.txt'+test_suffix]))
 
-def get_VOC_examplefile_fp(example_root_folder, category, example_typ, test_suffix):
-    return os.path.join(example_root_folder, '_'.join([category, example_typ+'.txt'+test_suffix]))
+def get_VOC_examplefile_fp(example_root_folder, category, example_typ):
+    return os.path.join(example_root_folder, '_'.join([category, example_typ+'.txt']))
     
 def pickle_LSSVM(classifier_fp):
     with open(classifier_fp) as lssvm:
         return pickle.load(lssvm)
 
-def evaluation_phase(lssvm,example_train, train_batch_features, exp_type,\
-                     resDir,detailFolder, \
-                     numWords, dataSource, resultFileName, example_root_folder, test_suffix):
-    #Training results
-    train_ap = getTestResults(lssvm, example_train, "train", resDir,detailFolder, lssvm.tradeoff, lssvm.scale,\
-                              lssvm.epsilon, lssvm.lbd, lssvm.category, recording = True)
+def getTestExample(lssvm, example_root_folder, test_batch_features, example_type):
+    test_example_file_fp = get_VOC_examplefile_fp(example_root_folder, lssvm.category, example_type)
+    listTest = reader.readBatchBagMIL(test_example_file_fp,test_batch_features, True, lssvm.scale)
+    example_test = STrainingList(listTest)
+    return example_test
+    
+def evaluation_phase(lssvm, exp_type, example_train, train_batch_features, example_root_folder,\
+                     result_file_fp):
+    #Training ap results
+    train_ap = lssvm.getAP(lssvm, example_train)
     
     if exp_type == "validation":
         test_batch_features = train_batch_features
+        example_test = getTestExample(lssvm, example_root_folder, test_batch_features, "val")
+    
     elif exp_type == "fulltest":
-        print 
+        #TODO
+#         test_batch_features = reader.combineFeatureJson(test_batch_feature_mainfolder, False)
+        example_test = getTestExample(lssvm, example_root_folder, test_batch_features, "test")
+        
     elif exp_type == "trainval_valtest":
         test_batch_features = train_batch_features
-    #Prepare Test examples
-                
-    test_example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, "val",test_suffix)
-    listTest = reader.readBatchBagMIL(test_example_file_fp,test_batch_features, numWords, True, dataSource, scale)
-    example_test = STrainingList(listTest)
+        example_test = getTestExample(lssvm, example_root_folder, test_batch_features, "val_val")
     
+    else:
+        raise NotImplementedError
     #Test results
-    test_ap = getTestResults(lssvm, example_test, "val", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
-
-    #Recording score for each example
-    writeResultScore(lssvm, example_test, "val", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category)
+    test_ap = lssvm.getAP(lssvm, example_test)
     
     #Result Summary
-    result_file = open(os.path.join(resDir, resultFileName),'w+')
-    result_file.write(' '.join([category, str(tradeoff), str(scale), str(lbd), str(epsilon), str(test_ap), str(train_ap)]))
-    result_file.close()
+    writeAP(lssvm, result_file_fp, test_ap, train_ap)
      
     print "train ap: %f"%train_ap
     print "test ap: %f"%test_ap
     print "***************************************************"
 
 
-def train_phase(resDir, classifier_folder_name,\
+def train_phase(resDir, classifier_folder,\
                 category, scale, lbd, epsilon, tradeoff,\
-                initializedType, test_suffix, hnorm, numWords,\
+                initializedType, hnorm, numWords,\
                 optim, epochsLatentMax, epochsLatentMin,\
                 cpmax, cpmin, split,exp_type,\
                 load_classifier, listTrain, gazeType, lossPath, save_classifier):
     
     lssvm_name = get_LSSVM_name(category, scale, lbd, epsilon, tradeoff,\
-                                initializedType, test_suffix, hnorm, numWords,\
+                                initializedType, hnorm, numWords,\
                                 optim, epochsLatentMax, epochsLatentMin,\
                                 cpmax, cpmin, split,exp_type)
                             
-    classifier_folder = os.path.join(resDir, classifier_folder_name)
-    myIO.basic.check_folder(classifier_folder)
     classifier_fp = os.path.join(classifier_folder, lssvm_name)
     
     print "***************************************************"
@@ -142,6 +144,7 @@ def train_phase(resDir, classifier_folder_name,\
                 pickle.dump(lssvm,lssvm_path)
     
     return lssvm, example_train
+
 def main():
     
     # big    stefan
@@ -163,44 +166,41 @@ def main():
     sourceDir = "/local/wangxin/Data/ferrari_gaze/";
     resDir = "/local/wangxin/results/ferrari_gaze/std_et/";
     gazeType = "ferrari"
+    #validation, fulltest, trainval_valtest
+    exp_type = "trainval_valtest"
     
     # local test laptop
 #     sourceDir='/home/xin/'
 #     resDir = "/home/xin/results/ferrari_gaze/std_et/";
 #     gazeType = "ferrari"
         
-    #local or other things
-    
-    dataSource= "local";
+    #Content in the source directory 
     lossPath = sourceDir+"ETLoss_json/"
     trainval_batch_json_main_folder = os.path.join(sourceDir, 'm_2048_trainval_batch_feature')
     test_batch_json_main_folder = os.path.join(sourceDir, 'm_2048_test_batch_feature')
     example_root_folder = os.path.join(sourceDir, "voc_example_file_10_categories")
     
-    #validation, fulltest, trainval_valtest
-    exp_type = "trainval_valtest"
-#     lossPath = '/home/xin/ETLoss_dict/'
-#     resultFileName = "bestgamma_on_test.txt"
-#     detailFolder= "bestgamma_on_test"
-#     classifier_folder_name = "bestgamma_on_test"
-    resultFileName = "train_valval_valtest.txt"
-    detailFolder= "train_valval_valtest_metric"
-    classifier_folder_name = "train_valval_valtest_classifier"
+    exp_description = "debug"
+    result_file_fp = os.path.join(resDir,exp_description+".txt")
+    detection_folder= os.path.join(resDir,exp_description+"_metric")
+    myIO.basic.check_folder(detection_folder)
+    score_folder= os.path.join(resDir,exp_description+"_score")
+    myIO.basic.check_folder(score_folder)
+    classifier_folder = os.path.join(resDir,exp_description+"_classifier")
+    myIO.basic.check_folder(classifier_folder)
     
+    #parameters
     lambdaCV = [1e-4]
     epsilonCV = [1e-3]
     categories = ["horse"]
-    scaleCV = [90]    
-    tradeoffCV = [0.1]
-    
 #     categories = [sys.argv[1]]
+    scaleCV = [90]    
 #     scaleCV = [int(sys.argv[2])]    
+    tradeoffCV = [0.1]
 #     tradeoffCV = [float(sys.argv[3])]
 #     tradeoffCV = [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
     initializedType = "noInit"
-    test_suffix="";
     hnorm = False;
-    #add sys params
     
     numWords = 2048
     optim = 1;
@@ -214,13 +214,13 @@ def main():
     save_classifier = True
     
     print_exp_detail(categories, lambdaCV, epsilonCV, scaleCV, tradeoffCV,\
-                     initializedType, test_suffix, hnorm, numWords,\
+                     initializedType, hnorm, numWords,\
                      optim, epochsLatentMax, epochsLatentMin, cpmax, cpmin, splitCV, exp_type)
     
     for scale in scaleCV:
-        
-        trainval_batch_feature_mainfolder = os.path.join(trainval_batch_json_main_folder, str(scale))
-        test_batch_feature_mainfolder = os.path.join(test_batch_json_main_folder, str(scale))
+        #batch feature folder
+#         trainval_batch_feature_mainfolder = os.path.join(trainval_batch_json_main_folder, str(scale))
+#         test_batch_feature_mainfolder = os.path.join(test_batch_json_main_folder, str(scale))
 
         train_batch_features = json.load(open("/home/wangxin/Data/ferrari_gaze/m_2048_trainval_batch_feature/single_json/"+str(scale)+".json"))
         
@@ -229,70 +229,26 @@ def main():
 #                 listTrain = BagReader.readIndividualBagMIL(get_example_file_fp(sourceDir, scale, category, "train",test_suffix), numWords, True, dataSource)
 #                 listVal = BagReader.readIndividualBagMIL(get_example_file_fp(sourceDir, scale, category, "val",test_suffix), numWords, True, dataSource)
                 if exp_type == "fulltest":
-                    train_example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, "trainval",test_suffix)
+                    train_example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, "trainval")
 #                     test_example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, "test",test_suffix)
 
                 elif exp_type == "validation" or exp_type == "trainval_valtest":
-                    train_example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, "train",test_suffix)
+                    train_example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, "train")
                 
-                listTrain = reader.readBatchBagMIL(train_example_file_fp,train_batch_features, numWords, True, dataSource, scale)
-                
+                listTrain = reader.readBatchBagMIL(train_example_file_fp,train_batch_features, True, scale)
                 for epsilon in epsilonCV:
                     for lbd in lambdaCV:
                         for tradeoff in tradeoffCV:
-                            
-                            lssvm, example_train = train_phase(resDir, classifier_folder_name,\
+                            lssvm, example_train = train_phase(resDir, classifier_folder,\
                                                 category, scale, lbd, epsilon, tradeoff,\
-                                                initializedType, test_suffix, hnorm, numWords,\
+                                                initializedType, hnorm, numWords,\
                                                 optim, epochsLatentMax, epochsLatentMin,\
                                                 cpmax, cpmin, split,exp_type,\
                                                 load_classifier, listTrain, gazeType, lossPath, save_classifier)
                             
-                            if exp_type == "validation":
-                                
-                                #Training results
-                                train_ap = getTestResults(lssvm, example_train, "train", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
-                                
-                                #Prepare Test examples
-                                test_batch_features = train_batch_features            
-                                test_example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, "val",test_suffix)
-                                listTest = reader.readBatchBagMIL(test_example_file_fp,test_batch_features, numWords, True, dataSource, scale)
-                                example_test = STrainingList(listTest)
-                                
-                                #Test results
-                                test_ap = getTestResults(lssvm, example_test, "val", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
-
-                                #Recording score for each example
-                                writeResultScore(lssvm, example_test, "val", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category)
-                                
-                                #Result Summary
-                                
-                                result_file = open(os.path.join(resDir, resultFileName),'w+')
-                                result_file.write(' '.join([category, str(tradeoff), str(scale), str(lbd), str(epsilon), str(test_ap), str(train_ap)]))
-                                result_file.close()
-                                 
-                                print "train ap: %f"%train_ap
-                                print "test ap: %f"%test_ap
-                                print "***************************************************"
-                            elif exp_type == "fulltest":
-                                #Training results
-                                train_ap = getTestResults(lssvm, example_train, "train", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
-                                
-                                
-                                test_batch_features = reader.combineFeatureJson(test_batch_feature_mainfolder, False)
-                                test_example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, "val_val",test_suffix)
-                                listTest = reader.readBatchBagMIL(test_example_file_fp,test_batch_features, numWords, True, dataSource, scale)
-                                example_test = STrainingList(listTest)
-
-                                train_ap = getTestResults(lssvm, example_train, "trainval", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
-                                result_file = open(os.path.join(resDir, resultFileName),'a+')
-                                result_file.write(' '.join([category, str(tradeoff), str(scale), str(lbd), str(epsilon), str(train_ap)]))
-                                result_file.close()
-#                                 test_ap = writeResultScore(lsvm, example_test, "test", resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True)
-                            
-                            elif exp_type == "trainval_valtest":
-                                pass
-                           
+                            evaluation_phase(lssvm, exp_type, example_train, train_batch_features,\
+                                             example_root_folder, result_file_fp)
+                                                       
                                     
                                         
 if __name__ == "__main__":

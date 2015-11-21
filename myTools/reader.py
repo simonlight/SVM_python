@@ -79,14 +79,14 @@ def readBatchFeatureExample(example, batch_features, bias, scale):
 
     return TrainingSample.TrainingSample(BagMIL.BagMIL(filename, label, features), label)
 
-def readBatchBagMIL(example_filepath, batch_features, dim, bias, dataSource, scale):
+def readBatchBagMIL(example_filepath, batch_features, bias, dataSource, scale):
     print example_filepath
     if not os.path.exists(example_filepath):
         print "%s not found"%example_filepath
         raise IOError
     else:
         example_list=[]
-        print ' '.join(["reading bag:",example_filepath,"\t dimension: ",str(dim)])
+        print ' '.join(["reading bag:",example_filepath])
         with open(example_filepath) as ef:
             for example in ef:
                 example_list.append(readBatchFeatureExample(example.strip(), batch_features, bias, scale))
