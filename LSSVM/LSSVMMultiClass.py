@@ -150,7 +150,7 @@ def train_phase(resDir, classifier_folder,\
         lssvm.setTradeoff(tradeoff);
         lssvm.setScale(scale)
         lssvm.setHnorm(hnorm)
-        lssvm.setClassName(category);
+        lssvm.setCategory(category);
         
         lssvm.train(example_train)
         
