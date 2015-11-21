@@ -86,7 +86,7 @@ def getTestExample(lssvm, example_root_folder, test_batch_features, example_type
 def evaluation_phase(lssvm, exp_type, example_train, train_batch_features, example_root_folder,\
                      result_file_fp):
     #Training ap results
-    train_ap = lssvm.getAP(lssvm, example_train)
+    train_ap = lssvm.getAP(example_train)
     
     if exp_type == "validation":
         test_batch_features = train_batch_features
@@ -228,7 +228,7 @@ def main():
     cpmin = 2;
     splitCV = [1];
     
-    load_classifier = False
+    load_classifier = True
     save_classifier = True
     
     print_exp_detail(categories, lambdaCV, epsilonCV, scaleCV, tradeoffCV,\
