@@ -79,8 +79,11 @@ def readBatchFeatureExample(example, batch_features, bias, scale):
     #sorted by key
     ########
     f= open(batch_features)
+    print f
     objects = ijson.items(f, filename)
+    print objects
     bag_features = objects.next()
+    print bag_features
     ########
     
 #     bag_features = batch_features[filename]    
