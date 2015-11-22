@@ -256,8 +256,8 @@ def main():
     cpmin = 2;
     splitCV = [1];
     
-    load_classifier = True
-    save_classifier = True
+    load_classifier = False
+    save_classifier = False
     
     print_exp_detail(categories, lambdaCV, epsilonCV, scaleCV, tradeoffCV,\
                      initializedType, hnorm, numWords,\
