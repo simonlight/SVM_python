@@ -166,7 +166,7 @@ def train_phase(resDir, classifier_folder,\
     
     return lssvm
 
-@profile
+# @profile
 def main():
     
     # big    stefan
