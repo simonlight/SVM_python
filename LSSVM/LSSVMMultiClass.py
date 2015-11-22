@@ -244,23 +244,43 @@ def main():
                      initializedType, hnorm, numWords,\
                      optim, epochsLatentMax, epochsLatentMin, cpmax, cpmin, splitCV, exp_type)
     
-    for scale in scaleCV:
-        #batch feature folder
-#         trainval_batch_feature_mainfolder = os.path.join(trainval_batch_json_main_folder, str(scale))
-#         test_batch_feature_mainfolder = os.path.join(test_batch_json_main_folder, str(scale))
+    scale=90
+    category="horse"
+    split=1
+    # save memory
+    train_batch_features = json.load(open(os.path.join(trainval_single_json_folder,str(scale)+".json")))
 
-        for category in categories:
-            for split in scaleCV:
-                # save memory
-                train_batch_features = json.load(open(os.path.join(trainval_single_json_folder,str(scale)+".json")))
-    
-                example_train, example_test = generate_examples(category, scale, example_root_folder, train_batch_features,exp_type)
-                               
-                                        
-                for epsilon in epsilonCV:
-                    for lbd in lambdaCV:
-                        for tradeoff in tradeoffCV:
-                            pass
+    example_train, example_test = generate_examples(category, scale, example_root_folder, train_batch_features,exp_type)
+                   
+                            
+    for epsilon in epsilonCV:
+        for lbd in lambdaCV:
+            for tradeoff in tradeoffCV:
+                lssvm = train_phase(resDir, classifier_folder,\
+                                    category, scale, lbd, epsilon, tradeoff,\
+                                    initializedType, hnorm, numWords,\
+                                    optim, epochsLatentMax, epochsLatentMin,\
+                                    cpmax, cpmin, split,exp_type,\
+                                    load_classifier, example_train, gazeType, lossPath, save_classifier)
+                
+                evaluation_phase(lssvm, example_train, example_test, result_file_fp)
+                                                       
+#     for scale in scaleCV:
+#         #batch feature folder
+# #         trainval_batch_feature_mainfolder = os.path.join(trainval_batch_json_main_folder, str(scale))
+# #         test_batch_feature_mainfolder = os.path.join(test_batch_json_main_folder, str(scale))
+# 
+#         for category in categories:
+#             for split in scaleCV:
+#                 # save memory
+#                 train_batch_features = json.load(open(os.path.join(trainval_single_json_folder,str(scale)+".json")))
+#     
+#                 example_train, example_test = generate_examples(category, scale, example_root_folder, train_batch_features,exp_type)
+#                                
+#                                         
+#                 for epsilon in epsilonCV:
+#                     for lbd in lambdaCV:
+#                         for tradeoff in tradeoffCV:
 #                             lssvm = train_phase(resDir, classifier_folder,\
 #                                                 category, scale, lbd, epsilon, tradeoff,\
 #                                                 initializedType, hnorm, numWords,\
