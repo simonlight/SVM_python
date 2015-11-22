@@ -187,19 +187,19 @@ def train_phase(resDir, classifier_folder,\
 def main():
     
     # big    stefan
-#     sourceDir = "/home/wangxin/Data/gaze_voc_actions_stefan/"
-#     simDir = "/home/wangxin/results/ferrari_gaze/std_et/"
-#     gazeType = "stefan"
+    sourceDir = "/home/wangxin/Data/full_stefan_gaze/"
+    resDir = "/home/wangxin/results/full_stefan_gaze/std_et/"
+    gazeType = "stefan"
     
     # local stefan
 #     sourceDir = "/local/wangxin/Data/gaze_voc_actions_stefan/"
-#     simDir = "/local/wangxin/results/stefan_gaze/std_et/"
+#     resDir = "/local/wangxin/results/stefan_gaze/std_et/"
 #     gazeType = "stefan"
 
     # big ferrari
-    sourceDir = "/home/wangxin/Data/ferrari_gaze/"
-    resDir = "/home/wangxin/results/ferrari_gaze/std_et/"
-    gazeType = "ferrari"
+#     sourceDir = "/home/wangxin/Data/ferrari_gaze/"
+#     resDir = "/home/wangxin/results/ferrari_gaze/std_et/"
+#     gazeType = "ferrari"
 #         
 #     local ferrari
 #     sourceDir = "/local/wangxin/Data/ferrari_gaze/";

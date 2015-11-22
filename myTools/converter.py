@@ -88,10 +88,10 @@ def jsonFileFeatures(txt_feature_folder, json_feature_folder, scales, batch_size
                 scale_feature_json[filename][index] = reader.file2FloatList(os.path.join(txt_feature_folder_of_scale, feature_fp))
         with open(os.path.join(json_feature_folder, str(scale), str(cnt / (batch_feature_num)) + '.json'),'w') as batch_feature_file:
             print os.path.join(json_feature_folder, str(scale), str(cnt / (batch_feature_num)) + '.json')
-            #json.dump(scale_feature_json, batch_feature_file)
+            json.dump(scale_feature_json, batch_feature_file)
             scale_feature_json = defaultdict(lambda: defaultdict(lambda: None))
             print "%d / %d finished and saved"%(cnt, len(feature_fps)-1)
         
 if __name__ == "__main__":
-    jsonFileFeatures("/local/wangxin/Data/ferrari_gaze/m_2048_test_features", "/local/wangxin/Data/ferrari_gaze/m_2048_test_batch_feature", [100,90,80,70,60,50,40,30], 100)
+    jsonFileFeatures("/home/wangxin/Data/full_stefan_gaze/m_2048_trainval_batch_feature", [100,90], 100)
     
