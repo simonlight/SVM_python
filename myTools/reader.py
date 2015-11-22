@@ -11,7 +11,7 @@ from DataType import TrainingSample
 from myTools import vector
 import collections
 from myTools import converter
-import ijson.backends.yajl2 as ijson
+import ijson
 
 
 
