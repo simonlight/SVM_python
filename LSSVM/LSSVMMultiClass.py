@@ -166,7 +166,7 @@ def train_phase(resDir, classifier_folder,\
     
     return lssvm
 
-# @profile
+@profile
 def main():
     
     # big    stefan
@@ -309,7 +309,7 @@ if __name__ == "__main__":
     sys.path.append("/home/wangxin/code/SVM_python")
     
     import os
-#     from memory_profiler import profile
+    from memory_profiler import profile
 #     from memory_profiler import memory_usage
     import ijson
     import json
