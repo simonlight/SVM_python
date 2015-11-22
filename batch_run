@@ -9,7 +9,7 @@ cls_arr=("dog" "cat" "motorbike" "boat" "aeroplane" "horse" "cow" "sofa" "dining
 #cls_arr=("horse")
 
 scale_arr=("40")
-k='oarsub -p "host='"'"'big$1'"'"' " -l "nodes=1/core=4,walltime=500:0:0" --notify "mail:xin.wang@lip6.fr" "python -u /home/wangxin/code/SVM_python/LSSVM/LSSVMMultiClass.py'
+k='oarsub -p "host='"'"'big$1'"'"' " -l "nodes=1/core=1,walltime=500:0:0" --notify "mail:xin.wang@lip6.fr" "python -u /home/wangxin/code/SVM_python/LSSVM/LSSVMMultiClass.py'
 
 end='"'
 space=' '
