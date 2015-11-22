@@ -271,8 +271,8 @@ def main():
                 example_val_path = os.path.join(sourceDir, serialized_example_folder, str(scale), category+"_val_val.examples")
                 example_test_path = os.path.join(sourceDir, serialized_example_folder, str(scale), category+"_val_test.examples")
                 
-#                 example_train_path = "/local/wangxin/train.examples"
-#                 example_val_path = "/local/wangxin/test.examples"
+                example_train_path = "/local/wangxin/horse_train.examples"
+                example_test_path = "/local/wangxin/horse_val_val.examples"
                 
                 example_train = pickle.load(open(example_train_path))
                 example_test = pickle.load(open(example_val_path))
