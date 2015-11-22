@@ -259,9 +259,9 @@ def main():
                 generate_examples(category, scale, example_root_folder, train_batch_features,exp_type)
 
                 print "saving examples:%s,%s"%(scale, category)
-                pickle.dump(example_train, open(os.path.join(sourceDir, "serialized_examples_trainval_valtest", str(scale), category+"train.examples"),'w'))
-                pickle.dump(example_val_val, open(os.path.join(sourceDir, "serialized_examples_trainval_valtest", str(scale), category+"val_test.examples"),'w'))
-                pickle.dump(example_val_test, open(os.path.join(sourceDir, "serialized_examples_trainval_valtest", str(scale), category+"val_test.examples"),'w'))         
+                pickle.dump(example_train, open(os.path.join(sourceDir, "serialized_examples_trainval_valtest", str(scale), category+"_train.examples"),'w'))
+                pickle.dump(example_val_val, open(os.path.join(sourceDir, "serialized_examples_trainval_valtest", str(scale), category+"_val_test.examples"),'w'))
+                pickle.dump(example_val_test, open(os.path.join(sourceDir, "serialized_examples_trainval_valtest", str(scale), category+"_val_test.examples"),'w'))         
 #     example_train = pickle.load(open("/local/wangxin/train.examples"))
 #     example_test = pickle.load(open("/local/wangxin/test.examples"))
     for epsilon in epsilonCV:
