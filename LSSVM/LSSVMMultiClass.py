@@ -78,6 +78,21 @@ def pickle_LSSVM(classifier_fp):
     with open(classifier_fp) as lssvm:
         return pickle.load(lssvm)
 
+def pickle_example(trainval_single_json_folder, scale, category, example_root_folder, exp_type, sourceDir, serialized_example_folder):
+    train_batch_features = json.load(open(os.path.join(trainval_single_json_folder,str(scale)+".json")))
+
+    example_train, example_val_val, example_val_test = \
+    generate_examples(category, scale, example_root_folder, train_batch_features,exp_type)
+    
+    print "saving examples:%s,%s"%(scale, category)
+    pickle.dump(example_train, open(os.path.join(sourceDir, serialized_example_folder, str(scale), \
+                category+"_train.examples"),'w'))
+    pickle.dump(example_val_val, open(os.path.join(sourceDir, serialized_example_folder, str(scale), \
+                category+"_val_val.examples"),'w'))
+    pickle.dump(example_val_test, open(os.path.join(sourceDir, serialized_example_folder, str(scale), \
+                category+"_val_test.examples"),'w'))         
+
+
 def getExample(category, scale, example_root_folder, batch_features, example_type):
     example_file_fp = get_VOC_examplefile_fp(example_root_folder, category, example_type)
     listExample = reader.readBatchBagMIL(example_file_fp, batch_features, True, scale)
@@ -167,6 +182,8 @@ def train_phase(resDir, classifier_folder,\
                 pickle.dump(lssvm,lssvm_path)
     
     return lssvm
+
+
 # @profile
 def main():
     
@@ -181,17 +198,17 @@ def main():
 #     gazeType = "stefan"
 
 #     # big ferrari
-    sourceDir = "/home/wangxin/Data/ferrari_gaze/"
-    resDir = "/home/wangxin/results/ferrari_gaze/std_et/"
-    gazeType = "ferrari";
+#     sourceDir = "/home/wangxin/Data/ferrari_gaze/"
+#     resDir = "/home/wangxin/results/ferrari_gaze/std_et/"
+#     gazeType = "ferrari";
 #         
 #     local ferrari
-#     sourceDir = "/local/wangxin/Data/ferrari_gaze/";
-#     resDir = "/local/wangxin/results/ferrari_gaze/std_et/";
-#     gazeType = "ferrari"
+    sourceDir = "/local/wangxin/Data/ferrari_gaze/";
+    resDir = "/local/wangxin/results/ferrari_gaze/std_et/";
+    gazeType = "ferrari"
     #validation, fulltest, trainval_valtest
     exp_type = "trainval_valtest"
-    
+    serialized_example_folder = "serialized_examples_trainval_valtest"
     # local test laptop
 #     sourceDir='/home/xin/'
 #     resDir = "/home/xin/results/ferrari_gaze/std_et/";
@@ -217,12 +234,13 @@ def main():
     #parameters
     lambdaCV = [1e-4]
     epsilonCV = [1e-3]
-    categories = ["dog", "cat", "motorbike", "boat","aeroplane","horse", "cow","sofa","diningtable","bicycle"]
+    categories = ["horse"]
+#     categories = ["dog", "cat", "motorbike", "boat","aeroplane","horse", "cow","sofa","diningtable","bicycle"]
 #     categories = ["dog", "cat", "motorbike"]
 #     categories = ["boat","aeroplane","horse"]
 #     categories = ["cow","sofa","diningtable","bicycle"]
 #     categories = [sys.argv[1]]
-    scaleCV = [90,80,70,60,50,40,30]    
+    scaleCV = [90]    
 #     scaleCV = [int(sys.argv[2])]    
     tradeoffCV = [0.1]
 #     tradeoffCV = [float(sys.argv[3])]
@@ -245,69 +263,31 @@ def main():
                      initializedType, hnorm, numWords,\
                      optim, epochsLatentMax, epochsLatentMin, cpmax, cpmin, splitCV, exp_type)
 
-    for scale in scaleCV:
-        #batch feature folder
-#         trainval_batch_feature_mainfolder = os.path.join(trainval_batch_json_main_folder, str(scale))
-#         test_batch_feature_mainfolder = os.path.join(test_batch_json_main_folder, str(scale))
-   
+    for scale in scaleCV: 
         for category in categories:
-            print scale, category
             for split in splitCV:
                 # save memory
-                train_batch_features = json.load(open(os.path.join(trainval_single_json_folder,str(scale)+".json")))
-       
-                example_train, example_val_val, example_val_test = \
-                generate_examples(category, scale, example_root_folder, train_batch_features,exp_type)
-
-                print "saving examples:%s,%s"%(scale, category)
-                pickle.dump(example_train, open(os.path.join(sourceDir, "serialized_examples_trainval_valtest", str(scale), category+"_train.examples"),'w'))
-                pickle.dump(example_val_val, open(os.path.join(sourceDir, "serialized_examples_trainval_valtest", str(scale), category+"_val_val.examples"),'w'))
-                pickle.dump(example_val_test, open(os.path.join(sourceDir, "serialized_examples_trainval_valtest", str(scale), category+"_val_test.examples"),'w'))         
-#     example_train = pickle.load(open("/local/wangxin/train.examples"))
-#     example_test = pickle.load(open("/local/wangxin/test.examples"))
-    for epsilon in epsilonCV:
-        for lbd in lambdaCV:
-            for tradeoff in tradeoffCV:
-                print 1
-#                 lssvm = train_phase(resDir, classifier_folder,\
-#                                     category, scale, lbd, epsilon, tradeoff,\
-#                                     initializedType, hnorm, numWords,\
-#                                     optim, epochsLatentMax, epochsLatentMin,\
-#                                     cpmax, cpmin, split,exp_type,\
-#                                     load_classifier, example_train, gazeType, lossPath, save_classifier)
-#                    
-#                 evaluation_phase(lssvm, example_train, example_test, result_file_fp)
-#                   
-####################
-####################                                     
-####################
-####################                                     
-####################
-####################                                     
-#     for scale in scaleCV:
-#         #batch feature folder
-# #         trainval_batch_feature_mainfolder = os.path.join(trainval_batch_json_main_folder, str(scale))
-# #         test_batch_feature_mainfolder = os.path.join(test_batch_json_main_folder, str(scale))
-#   
-#         for category in categories:
-#             for split in scaleCV:
-#                 # save memory
-#                 train_batch_features = json.load(open(os.path.join(trainval_single_json_folder,str(scale)+".json")))
-#       
-#                 example_train, example_test = generate_examples(category, scale, example_root_folder, train_batch_features,exp_type)
-#                                  
-#                                           
-#                 for epsilon in epsilonCV:
-#                     for lbd in lambdaCV:
-#                         for tradeoff in tradeoffCV:
-#                             lssvm = train_phase(resDir, classifier_folder,\
-#                                                 category, scale, lbd, epsilon, tradeoff,\
-#                                                 initializedType, hnorm, numWords,\
-#                                                 optim, epochsLatentMax, epochsLatentMin,\
-#                                                 cpmax, cpmin, split,exp_type,\
-#                                                 load_classifier, example_train, gazeType, lossPath, save_classifier)
-#                               
-#                             evaluation_phase(lssvm, example_train, example_test, result_file_fp)
+                example_train_path = os.path.join(sourceDir, serialized_example_folder, str(scale), category+"_train.examples")
+                example_val_path = os.path.join(sourceDir, serialized_example_folder, str(scale), category+"_val_val.examples")
+                example_test_path = os.path.join(sourceDir, serialized_example_folder, str(scale), category+"_val_test.examples")
+                
+                example_train_path = "/local/wangxin/train.examples"
+                example_val_path = "/local/wangxin/test.examples"
+                
+                example_train = pickle.load(open(example_train_path))
+                example_test = pickle.load(open(example_val_path))
+    
+                for epsilon in epsilonCV:
+                    for lbd in lambdaCV:
+                        for tradeoff in tradeoffCV:
+                            lssvm = train_phase(resDir, classifier_folder,\
+                                                category, scale, lbd, epsilon, tradeoff,\
+                                                initializedType, hnorm, numWords,\
+                                                optim, epochsLatentMax, epochsLatentMin,\
+                                                cpmax, cpmin, split,exp_type,\
+                                                load_classifier, example_train, gazeType, lossPath, save_classifier)
+                               
+                            evaluation_phase(lssvm, example_train, example_test, result_file_fp)
                                                        
                                     
                                         
