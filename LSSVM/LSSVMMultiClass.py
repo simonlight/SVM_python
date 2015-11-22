@@ -198,14 +198,14 @@ def main():
 #     gazeType = "stefan"
 
 #     # big ferrari
-#     sourceDir = "/home/wangxin/Data/ferrari_gaze/"
-#     resDir = "/home/wangxin/results/ferrari_gaze/std_et/"
-#     gazeType = "ferrari";
+    sourceDir = "/home/wangxin/Data/ferrari_gaze/"
+    resDir = "/home/wangxin/results/ferrari_gaze/std_et/"
+    gazeType = "ferrari"
 #         
 #     local ferrari
-    sourceDir = "/local/wangxin/Data/ferrari_gaze/";
-    resDir = "/local/wangxin/results/ferrari_gaze/std_et/";
-    gazeType = "ferrari"
+#     sourceDir = "/local/wangxin/Data/ferrari_gaze/";
+#     resDir = "/local/wangxin/results/ferrari_gaze/std_et/";
+#     gazeType = "ferrari"
     #validation, fulltest, trainval_valtest
     exp_type = "trainval_valtest"
     serialized_example_folder = "serialized_examples_trainval_valtest"
@@ -271,8 +271,8 @@ def main():
                 example_val_path = os.path.join(sourceDir, serialized_example_folder, str(scale), category+"_val_val.examples")
                 example_test_path = os.path.join(sourceDir, serialized_example_folder, str(scale), category+"_val_test.examples")
                 
-                example_train_path = "/local/wangxin/train.examples"
-                example_val_path = "/local/wangxin/test.examples"
+#                 example_train_path = "/local/wangxin/train.examples"
+#                 example_val_path = "/local/wangxin/test.examples"
                 
                 example_train = pickle.load(open(example_train_path))
                 example_test = pickle.load(open(example_val_path))
