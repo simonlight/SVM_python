@@ -248,12 +248,12 @@ def main():
     category="horse"
     split=1
     # save memory
-#     with open(os.path.join(trainval_single_json_folder,str(scale)+".json")) as train_batch_feature_file:
-# #         train_batch_features = json.load(train_batch_feature_file)
+    with open(os.path.join(trainval_single_json_folder,str(scale)+".json")) as train_batch_feature_file:
+        train_batch_features = json.load(train_batch_feature_file)
 #         train_batch_features = ijson.parse(train_batch_feature_file)
-    train_batch_feature_fp = os.path.join(trainval_single_json_folder,str(scale)+".json")
+#     train_batch_feature_fp = os.path.join(trainval_single_json_folder,str(scale)+".json")
 
-    example_train, example_test = generate_examples(category, scale, example_root_folder, train_batch_feature_fp,exp_type)
+    example_train, example_test = generate_examples(category, scale, example_root_folder, train_batch_features,exp_type)
     pickle.dump(example_train, "/local/wangxin/train.examples")
     pickle.dump(example_test, "/local/wangxin/test.examples")         
     for epsilon in epsilonCV:
