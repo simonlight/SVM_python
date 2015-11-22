@@ -258,7 +258,7 @@ def main():
                 example_train, example_val_val, example_val_test = \
                 generate_examples(category, scale, example_root_folder, train_batch_features,exp_type)
 
-    
+                print "saving examples:%s,%s"%(scale, category)
                 pickle.dump(example_train, open(os.path.join(sourceDir, "serialized_examples_trainval_valtest", str(scale), category+"train.examples"),'w'))
                 pickle.dump(example_val_val, open(os.path.join(sourceDir, "serialized_examples_trainval_valtest", str(scale), category+"val_test.examples"),'w'))
                 pickle.dump(example_val_test, open(os.path.join(sourceDir, "serialized_examples_trainval_valtest", str(scale), category+"val_test.examples"),'w'))         
