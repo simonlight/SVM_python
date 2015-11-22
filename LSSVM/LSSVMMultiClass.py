@@ -254,7 +254,8 @@ def main():
     train_batch_feature_fp = os.path.join(trainval_single_json_folder,str(scale)+".json")
 
     example_train, example_test = generate_examples(category, scale, example_root_folder, train_batch_feature_fp,exp_type)
-                             
+    pickle.dump(example_train, "/local/wangxin/train.examples")
+    pickle.dump(example_test, "/local/wangxin/test.examples")         
     for epsilon in epsilonCV:
         for lbd in lambdaCV:
             for tradeoff in tradeoffCV:

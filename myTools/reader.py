@@ -62,11 +62,11 @@ def readIndividualBagMIL(example_filepath, dim, bias, dataSource):
                 example_list.append(readIndividualFeatureExample(example.strip(), bias))
     return example_list
 
-# def readBatchFeatureExampleijson(example_labels, batch_features, bias, scale):
-#     for el in example_labels:
-#         example_info = example.split()
-#         filename = example_info[0]
-#         label = int(example_info[1])
+def readBatchFeatureExampleijson(example_labels, batch_features, bias, scale):
+    for el in example_labels:
+        example_info = el.split()
+        filename = example_info[0]
+        label = int(example_info[1])
     
 
 def readBatchFeatureExample(example, batch_features, bias, scale):
@@ -77,18 +77,8 @@ def readBatchFeatureExample(example, batch_features, bias, scale):
     
     #normalization
     #sorted by key
-    ########
-    f= open(batch_features)
-    print f
-    objects = ijson.items(f, filename)
-    print objects
-    for i in objects:
-        print i
-#     bag_features = objects.next()
-#     print bag_features
-    ########
     
-#     bag_features = batch_features[filename]    
+    bag_features = batch_features[filename]    
     
     features = np.array([bag_features[str(k)] for k in xrange(converter.scale2RowNumber(scale)**2)])
     features = vector.L2norm(features)
@@ -107,7 +97,7 @@ def readBatchBagMILijson(example_filepath, batch_features, bias,  scale):
         print ' '.join(["reading bag:",example_filepath])
         with open(example_filepath) as ef:
             example_labels = [example.strip() for example in ef]
-        example_list = readBatchFeatureExample(example_labels, batch_features, bias, scale)
+        example_list = readBatchFeatureExampleijson(example_labels, batch_features, bias, scale)
     return example_list
 
 def readBatchBagMIL(example_filepath, batch_features, bias,  scale):
@@ -117,11 +107,8 @@ def readBatchBagMIL(example_filepath, batch_features, bias,  scale):
     else:
         example_list=[]
         print ' '.join(["reading bag:",example_filepath])
-        c=0
         with open(example_filepath) as ef:
             for example in ef:
-                c+=1
-                print c
                 example_list.append(readBatchFeatureExample(example.strip(), batch_features, bias, scale))
     return example_list
 
