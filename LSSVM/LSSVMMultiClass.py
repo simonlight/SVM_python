@@ -301,6 +301,7 @@ if __name__ == "__main__":
     sys.path.append("/home/wangxin/code/SVM_python")
     
     import os
+    import ijson
     from memory_profiler import profile
 #     from memory_profiler import memory_usage
     import json
