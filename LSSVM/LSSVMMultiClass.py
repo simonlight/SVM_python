@@ -118,7 +118,7 @@ def evaluation_phase(lssvm, example_train, example_test, result_file_fp):
      
     print "train ap: %f"%train_ap
     print "test ap: %f"%test_ap
-    print "***************************************************"
+    print "*******************Evalutation END********************************"
 
 
 def train_phase(resDir, classifier_folder,\
@@ -134,7 +134,7 @@ def train_phase(resDir, classifier_folder,\
                                 cpmax, cpmin, split,exp_type)
     classifier_fp = os.path.join(classifier_folder, lssvm_name)
 
-    print "***************************************************"
+    print "******************BEGIN TRAINING*********************************"
     
     if load_classifier and os.path.exists(classifier_fp):
         print "loading classifier:%s"%classifier_fp
@@ -260,14 +260,15 @@ def main():
                 for epsilon in epsilonCV:
                     for lbd in lambdaCV:
                         for tradeoff in tradeoffCV:
-                            lssvm = train_phase(resDir, classifier_folder,\
-                                                category, scale, lbd, epsilon, tradeoff,\
-                                                initializedType, hnorm, numWords,\
-                                                optim, epochsLatentMax, epochsLatentMin,\
-                                                cpmax, cpmin, split,exp_type,\
-                                                load_classifier, example_train, gazeType, lossPath, save_classifier)
-                            
-                            evaluation_phase(lssvm, example_train, example_test, result_file_fp)
+                            pass
+#                             lssvm = train_phase(resDir, classifier_folder,\
+#                                                 category, scale, lbd, epsilon, tradeoff,\
+#                                                 initializedType, hnorm, numWords,\
+#                                                 optim, epochsLatentMax, epochsLatentMin,\
+#                                                 cpmax, cpmin, split,exp_type,\
+#                                                 load_classifier, example_train, gazeType, lossPath, save_classifier)
+#                             
+#                             evaluation_phase(lssvm, example_train, example_test, result_file_fp)
                                                        
                                     
                                         
