@@ -71,12 +71,12 @@ def jsonFileFeatures(txt_feature_folder, json_feature_folder, scales, batch_size
             if len(feature_fps)/batch_feature_num != cnt / batch_feature_num:
                 continue
             if cnt != 0 and cnt % (batch_feature_num)== 0:
-                pass
+#                 pass
 
-#                 with open(os.path.join(json_feature_folder, str(scale), str(cnt / (batch_feature_num)-1) + '.json'),'w') as batch_feature_file:
-#                     json.dump(scale_feature_json, batch_feature_file)
-#                     scale_feature_json = defaultdict(lambda: defaultdict(lambda: None))
-#                     print "%d / %d finished and saved"%(cnt, len(feature_fps)-1)
+                with open(os.path.join(json_feature_folder, str(scale), str(cnt / (batch_feature_num)-1) + '.json'),'w') as batch_feature_file:
+                    json.dump(scale_feature_json, batch_feature_file)
+                    scale_feature_json = defaultdict(lambda: defaultdict(lambda: None))
+                    print "%d / %d finished and saved"%(cnt, len(feature_fps)-1)
             if scale != 100:
                 year, imid, d1, d2 = feature_fp.split('.')[0].split('_')
                 filename = '_'.join([year,imid])

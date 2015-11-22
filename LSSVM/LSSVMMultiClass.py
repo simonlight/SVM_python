@@ -4,7 +4,6 @@ Created on Nov 14, 2015
 @author: xin
 '''
 
-
 def getTestResults(lssvm, examples,typ, resDir,detailFolder, tradeoff, scale, epsilon, lbd, category, recording = True):
     if recording:
         detection_folder = os.path.join(resDir,detailFolder)
@@ -234,17 +233,17 @@ def main():
     #parameters
     lambdaCV = [1e-4]
     epsilonCV = [1e-3]
-    categories = ["horse"]
+#     categories = ["horse"]
 #     categories = ["dog", "cat", "motorbike", "boat","aeroplane","horse", "cow","sofa","diningtable","bicycle"]
 #     categories = ["dog", "cat", "motorbike"]
 #     categories = ["boat","aeroplane","horse"]
 #     categories = ["cow","sofa","diningtable","bicycle"]
-#     categories = [sys.argv[1]]
-    scaleCV = [90]    
-#     scaleCV = [int(sys.argv[2])]    
-    tradeoffCV = [0.1]
+    categories = [sys.argv[1]]
+#     scaleCV = [90]    
+    scaleCV = [int(sys.argv[2])]    
+#     tradeoffCV = [0.1]
 #     tradeoffCV = [float(sys.argv[3])]
-#     tradeoffCV = [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
+    tradeoffCV = [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
     initializedType = "noInit"
     hnorm = False;
     
@@ -256,8 +255,8 @@ def main():
     cpmin = 2;
     splitCV = [1];
     
-    load_classifier = False
-    save_classifier = False
+    load_classifier = True
+    save_classifier = True
     
     print_exp_detail(categories, lambdaCV, epsilonCV, scaleCV, tradeoffCV,\
                      initializedType, hnorm, numWords,\
@@ -266,13 +265,10 @@ def main():
     for scale in scaleCV: 
         for category in categories:
             for split in splitCV:
-                # save memory
+
                 example_train_path = os.path.join(sourceDir, serialized_example_folder, str(scale), category+"_train.examples")
                 example_val_path = os.path.join(sourceDir, serialized_example_folder, str(scale), category+"_val_val.examples")
                 example_test_path = os.path.join(sourceDir, serialized_example_folder, str(scale), category+"_val_test.examples")
-                
-                example_train_path = "/local/wangxin/horse_train.examples"
-                example_val_path = "/local/wangxin/horse_val_val.examples"
                 
                 example_train = pickle.load(open(example_train_path))
                 example_test = pickle.load(open(example_val_path))
@@ -286,7 +282,7 @@ def main():
                                                 optim, epochsLatentMax, epochsLatentMin,\
                                                 cpmax, cpmin, split,exp_type,\
                                                 load_classifier, example_train, gazeType, lossPath, save_classifier)
-                               
+                                
                             evaluation_phase(lssvm, example_train, example_test, result_file_fp)
                                                        
                                     

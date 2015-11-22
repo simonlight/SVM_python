@@ -34,9 +34,10 @@ class LSSVMMulticlassFastBagMILET(LSSVMMulticlassFastET):
                 gaze_ratio = self.lossMap[str(self.scale)][x.name][str(self.category)][str(h)]
             return gaze_ratio[0]
         elif gazeType == "stefan":
-            feature_path = x.features[h].split('/')
-            ETLossFileName = feature_path[-1]
-            gaze_ratio = self.lossMap.get(ETLossFileName)
+            if self.scale == 100:
+                gaze_ratio = self.lossMap[str(self.scale)][x.name+'.txt'][str(self.category)][str(h)]
+            else:
+                gaze_ratio = self.lossMap[str(self.scale)][x.name][str(self.category)][str(h)]
             return gaze_ratio[0]
         else:
             raise NotImplementedError
