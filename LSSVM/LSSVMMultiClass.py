@@ -216,16 +216,16 @@ def main():
     #parameters
     lambdaCV = [1e-4]
     epsilonCV = [1e-3]
-    categories = ["horse"]
+#     categories = ["horse"]
 #     categories = ["dog", "cat", "motorbike"]
 #     categories = ["boat","aeroplane","horse"]
 #     categories = ["cow","sofa","diningtable","bicycle"]
-#     categories = [sys.argv[1]]
-    scaleCV = [90]    
-#     scaleCV = [int(sys.argv[2])]    
-    tradeoffCV = [0.1]
+    categories = [sys.argv[1]]
+#     scaleCV = [90]    
+    scaleCV = [int(sys.argv[2])]    
+#     tradeoffCV = [0.1]
 #     tradeoffCV = [float(sys.argv[3])]
-#     tradeoffCV = [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
+    tradeoffCV = [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
     initializedType = "noInit"
     hnorm = False;
     
