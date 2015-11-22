@@ -8,7 +8,7 @@ cls_arr=("dog" "cat" "motorbike" "boat" "aeroplane" "horse" "cow" "sofa" "dining
 #cls_arr=("phoning")
 #cls_arr=("horse")
 
-scale_arr=("40")
+scale_arr=("70")
 k='oarsub -p "host='"'"'big$1'"'"' " -l "nodes=1/core=10,walltime=500:0:0" --notify "mail:xin.wang@lip6.fr" "python -u /home/wangxin/code/SVM_python/LSSVM/LSSVMMultiClass.py'
 
 end='"'
