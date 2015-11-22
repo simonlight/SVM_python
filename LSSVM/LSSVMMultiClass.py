@@ -261,15 +261,15 @@ def main():
     for epsilon in epsilonCV:
         for lbd in lambdaCV:
             for tradeoff in tradeoffCV:
-                print 1
-#                 lssvm = train_phase(resDir, classifier_folder,\
-#                                     category, scale, lbd, epsilon, tradeoff,\
-#                                     initializedType, hnorm, numWords,\
-#                                     optim, epochsLatentMax, epochsLatentMin,\
-#                                     cpmax, cpmin, split,exp_type,\
-#                                     load_classifier, example_train, gazeType, lossPath, save_classifier)
-#                  
-#                 evaluation_phase(lssvm, example_train, example_test, result_file_fp)
+#                 print 1
+                lssvm = train_phase(resDir, classifier_folder,\
+                                    category, scale, lbd, epsilon, tradeoff,\
+                                    initializedType, hnorm, numWords,\
+                                    optim, epochsLatentMax, epochsLatentMin,\
+                                    cpmax, cpmin, split,exp_type,\
+                                    load_classifier, example_train, gazeType, lossPath, save_classifier)
+                  
+                evaluation_phase(lssvm, example_train, example_test, result_file_fp)
 #                   
 ####################
 ####################                                     
