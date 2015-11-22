@@ -141,5 +141,5 @@ def combineFeatureJson(batch_feature_folder):
 if __name__ == '__main__':
     import sys
 #     sys.path.append("")
-    combineFeatureJsonIntoOneFile(["/home/wangxin/Data/full_stefan_gaze/m_2048_test_batch_feature"], [sys.argv[1]])
+    combineFeatureJsonIntoOneFile(["/home/wangxin/Data/ferrari_gaze/m_2048_test_batch_feature"], [sys.argv[1]])
 #     pass
