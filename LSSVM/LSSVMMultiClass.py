@@ -252,7 +252,7 @@ def main():
         train_batch_features = json.load(train_batch_feature_file)
 
     example_train, example_test = generate_examples(category, scale, example_root_folder, train_batch_features,exp_type)
-    del train_batch_features
+    train_batch_features = None
                             
     for epsilon in epsilonCV:
         for lbd in lambdaCV:
