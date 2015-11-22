@@ -93,5 +93,5 @@ def jsonFileFeatures(txt_feature_folder, json_feature_folder, scales, batch_size
             print "%d / %d finished and saved"%(cnt, len(feature_fps)-1)
         
 if __name__ == "__main__":
-    jsonFileFeatures("/home/wangxin/Data/full_stefan_gaze/m_2048_trainval_batch_feature", [100,90], 100)
-    
+#     jsonFileFeatures("/home/wangxin/Data/full_stefan_gaze/m_2048_trainval_batch_feature", [100,90], 100)
+    pass

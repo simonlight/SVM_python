@@ -125,7 +125,7 @@ def combineFeatureJsonIntoOneFile(batch_feature_mainfolders,scales):
                     for k2, v2 in v.items():
                         final_json[k][k2] = v2
             
-            json.dump(final_json,open(os.path.join(batch_feature_folder,'all.json'),'w'))
+            json.dump(final_json,open(os.path.join(batch_feature_mainfolder,"single_json",str(scale)+'.json'),'w'))
 
 def combineFeatureJson(batch_feature_folder):
     """combine seperate jsons together, use only once!!!!"""
@@ -141,5 +141,5 @@ def combineFeatureJson(batch_feature_folder):
 if __name__ == '__main__':
 #     import sys
 #     sys.path.append("")
-#     combineFeatureJsonIntoOneFile(["/local/wangxin/Data/full_stefan_gaze/m_2048_trainval_batch_feature"], [90])
-    pass
+    combineFeatureJsonIntoOneFile(["/home/wangxin/Data/full_stefan_gaze/m_2048_trainval_batch_feature"], [100])
+#     pass
