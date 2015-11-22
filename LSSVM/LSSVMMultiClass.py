@@ -251,6 +251,7 @@ def main():
 #         test_batch_feature_mainfolder = os.path.join(test_batch_json_main_folder, str(scale))
    
         for category in categories:
+            print scale, category
             for split in scaleCV:
                 # save memory
                 train_batch_features = json.load(open(os.path.join(trainval_single_json_folder,str(scale)+".json")))
