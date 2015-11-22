@@ -71,7 +71,7 @@ def readBatchFeatureExample(example, batch_features, bias, scale):
     #normalization
     #sorted by key
     bag_features = batch_features[filename]    
-    features = np.array([bag_features[str(k)] for k in range(converter.scale2RowNumber(scale)**2)])
+    features = np.array([bag_features[str(k)] for k in xrange(converter.scale2RowNumber(scale)**2)])
     features = vector.L2norm(features)
     feature_rownum = features.shape[0]
     if bias :
