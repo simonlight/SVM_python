@@ -11,7 +11,6 @@ from DataType import TrainingSample
 from myTools import vector
 import collections
 from myTools import converter
-import ijson
 
 
 

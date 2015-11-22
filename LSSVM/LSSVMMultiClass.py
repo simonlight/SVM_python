@@ -93,7 +93,9 @@ def generate_examples(category, scale, example_root_folder, train_batch_features
     elif exp_type == "trainval_valtest":
         example_train = getExample(category, scale, example_root_folder, train_batch_features, "train")
         test_batch_features = train_batch_features
-        example_test = getExample(category, scale, example_root_folder, test_batch_features, "val_val")
+        example_val_val = getExample(category, scale, example_root_folder, test_batch_features, "val_val")
+        example_val_test = getExample(category, scale, example_root_folder, test_batch_features, "val_test")
+        return example_train, example_val_val, example_val_test
     
     elif exp_type == "fulltest":
         example_train = getExample(category, scale, example_root_folder, train_batch_features, "tarinval")
@@ -165,8 +167,7 @@ def train_phase(resDir, classifier_folder,\
                 pickle.dump(lssvm,lssvm_path)
     
     return lssvm
-
-@profile
+# @profile
 def main():
     
     # big    stefan
@@ -216,12 +217,12 @@ def main():
     #parameters
     lambdaCV = [1e-4]
     epsilonCV = [1e-3]
-    categories = ["horse"]
+    categories = ["dog", "cat", "motorbike", "boat","aeroplane","horse", "cow","sofa","diningtable","bicycle"]
 #     categories = ["dog", "cat", "motorbike"]
 #     categories = ["boat","aeroplane","horse"]
 #     categories = ["cow","sofa","diningtable","bicycle"]
 #     categories = [sys.argv[1]]
-    scaleCV = [90]    
+    scaleCV = [90,80,70,60,50,40,30]    
 #     scaleCV = [int(sys.argv[2])]    
     tradeoffCV = [0.1]
 #     tradeoffCV = [float(sys.argv[3])]
@@ -243,33 +244,38 @@ def main():
     print_exp_detail(categories, lambdaCV, epsilonCV, scaleCV, tradeoffCV,\
                      initializedType, hnorm, numWords,\
                      optim, epochsLatentMax, epochsLatentMin, cpmax, cpmin, splitCV, exp_type)
-    
-    scale=90
-    category="horse"
-    split=1
-    # save memory
-#     with open(os.path.join(trainval_single_json_folder,str(scale)+".json")) as train_batch_feature_file:
-#         train_batch_features = json.load(train_batch_feature_file)
-#         train_batch_features = ijson.parse(train_batch_feature_file)
-#     train_batch_feature_fp = os.path.join(trainval_single_json_folder,str(scale)+".json")
 
-#     example_train, example_test = generate_examples(category, scale, example_root_folder, train_batch_features,exp_type)
-    example_train = pickle.load(open("/local/wangxin/train.examples"))
-    example_test = pickle.load(open("/local/wangxin/test.examples"))
-#     pickle.dump(example_train, open("/local/wangxin/train.examples",'w'))
-#     pickle.dump(example_test, open("/local/wangxin/test.examples",'w'))         
+    for scale in scaleCV:
+        #batch feature folder
+#         trainval_batch_feature_mainfolder = os.path.join(trainval_batch_json_main_folder, str(scale))
+#         test_batch_feature_mainfolder = os.path.join(test_batch_json_main_folder, str(scale))
+   
+        for category in categories:
+            for split in scaleCV:
+                # save memory
+                train_batch_features = json.load(open(os.path.join(trainval_single_json_folder,str(scale)+".json")))
+       
+                example_train, example_val_val, example_val_test = \
+                generate_examples(category, scale, example_root_folder, train_batch_features,exp_type)
+
+    
+                pickle.dump(example_train, open(os.path.join(sourceDir, "serialized_examples_trainval_valtest", str(scale), category+"train.examples"),'w'))
+                pickle.dump(example_val_val, open(os.path.join(sourceDir, "serialized_examples_trainval_valtest", str(scale), category+"val_test.examples"),'w'))
+                pickle.dump(example_val_test, open(os.path.join(sourceDir, "serialized_examples_trainval_valtest", str(scale), category+"val_test.examples"),'w'))         
+#     example_train = pickle.load(open("/local/wangxin/train.examples"))
+#     example_test = pickle.load(open("/local/wangxin/test.examples"))
     for epsilon in epsilonCV:
         for lbd in lambdaCV:
             for tradeoff in tradeoffCV:
-#                 print 1
-                lssvm = train_phase(resDir, classifier_folder,\
-                                    category, scale, lbd, epsilon, tradeoff,\
-                                    initializedType, hnorm, numWords,\
-                                    optim, epochsLatentMax, epochsLatentMin,\
-                                    cpmax, cpmin, split,exp_type,\
-                                    load_classifier, example_train, gazeType, lossPath, save_classifier)
-                  
-                evaluation_phase(lssvm, example_train, example_test, result_file_fp)
+                print 1
+#                 lssvm = train_phase(resDir, classifier_folder,\
+#                                     category, scale, lbd, epsilon, tradeoff,\
+#                                     initializedType, hnorm, numWords,\
+#                                     optim, epochsLatentMax, epochsLatentMin,\
+#                                     cpmax, cpmin, split,exp_type,\
+#                                     load_classifier, example_train, gazeType, lossPath, save_classifier)
+#                    
+#                 evaluation_phase(lssvm, example_train, example_test, result_file_fp)
 #                   
 ####################
 ####################                                     
@@ -281,15 +287,15 @@ def main():
 #         #batch feature folder
 # #         trainval_batch_feature_mainfolder = os.path.join(trainval_batch_json_main_folder, str(scale))
 # #         test_batch_feature_mainfolder = os.path.join(test_batch_json_main_folder, str(scale))
-#  
+#   
 #         for category in categories:
 #             for split in scaleCV:
 #                 # save memory
 #                 train_batch_features = json.load(open(os.path.join(trainval_single_json_folder,str(scale)+".json")))
-#      
+#       
 #                 example_train, example_test = generate_examples(category, scale, example_root_folder, train_batch_features,exp_type)
-#                                 
-#                                          
+#                                  
+#                                           
 #                 for epsilon in epsilonCV:
 #                     for lbd in lambdaCV:
 #                         for tradeoff in tradeoffCV:
@@ -299,7 +305,7 @@ def main():
 #                                                 optim, epochsLatentMax, epochsLatentMin,\
 #                                                 cpmax, cpmin, split,exp_type,\
 #                                                 load_classifier, example_train, gazeType, lossPath, save_classifier)
-#                              
+#                               
 #                             evaluation_phase(lssvm, example_train, example_test, result_file_fp)
                                                        
                                     
@@ -311,9 +317,8 @@ if __name__ == "__main__":
     sys.path.append("/home/wangxin/code/SVM_python")
     
     import os
-    from memory_profiler import profile
+#     from memory_profiler import profile
 #     from memory_profiler import memory_usage
-    import ijson
     import json
     from myTools import reader 
     import myIO.basic 
