@@ -11,6 +11,8 @@ from DataType import TrainingSample
 from myTools import vector
 import collections
 from myTools import converter
+import ijson.backends.yajl2 as ijson
+
 
 
 def file2list(filepath):
@@ -60,7 +62,12 @@ def readIndividualBagMIL(example_filepath, dim, bias, dataSource):
                 example_list.append(readIndividualFeatureExample(example.strip(), bias))
     return example_list
 
-
+# def readBatchFeatureExampleijson(example_labels, batch_features, bias, scale):
+#     for el in example_labels:
+#         example_info = example.split()
+#         filename = example_info[0]
+#         label = int(example_info[1])
+    
 
 def readBatchFeatureExample(example, batch_features, bias, scale):
     example_info = example.split()
@@ -70,7 +77,14 @@ def readBatchFeatureExample(example, batch_features, bias, scale):
     
     #normalization
     #sorted by key
-    bag_features = batch_features[filename]    
+    ########
+    f= open(batch_features)
+    objects = ijson.items(f, filename)
+    bag_features = objects.next()
+    ########
+    
+#     bag_features = batch_features[filename]    
+    
     features = np.array([bag_features[str(k)] for k in xrange(converter.scale2RowNumber(scale)**2)])
     features = vector.L2norm(features)
     feature_rownum = features.shape[0]
@@ -78,6 +92,18 @@ def readBatchFeatureExample(example, batch_features, bias, scale):
         features = np.concatenate((features, np.ones((feature_rownum,1))), axis=1)
 
     return TrainingSample.TrainingSample(BagMIL.BagMIL(filename, label, features), label)
+
+def readBatchBagMILijson(example_filepath, batch_features, bias,  scale):
+    print example_filepath
+    if not os.path.exists(example_filepath):
+        print "%s not found"%example_filepath
+        raise IOError
+    else:
+        print ' '.join(["reading bag:",example_filepath])
+        with open(example_filepath) as ef:
+            example_labels = [example.strip() for example in ef]
+        example_list = readBatchFeatureExample(example_labels, batch_features, bias, scale)
+    return example_list
 
 def readBatchBagMIL(example_filepath, batch_features, bias,  scale):
     print example_filepath
