@@ -252,12 +252,12 @@ def main():
         train_batch_features = json.load(train_batch_feature_file)
 
     example_train, example_test = generate_examples(category, scale, example_root_folder, train_batch_features,exp_type)
-                   
+    del train_batch_features
                             
     for epsilon in epsilonCV:
         for lbd in lambdaCV:
             for tradeoff in tradeoffCV:
-                pass
+                print 1
 #                 lssvm = train_phase(resDir, classifier_folder,\
 #                                     category, scale, lbd, epsilon, tradeoff,\
 #                                     initializedType, hnorm, numWords,\
