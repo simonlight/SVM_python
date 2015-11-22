@@ -252,7 +252,7 @@ def main():
    
         for category in categories:
             print scale, category
-            for split in scaleCV:
+            for split in splitCV:
                 # save memory
                 train_batch_features = json.load(open(os.path.join(trainval_single_json_folder,str(scale)+".json")))
        
