@@ -106,15 +106,17 @@ def readBatchBagMILijson(example_filepath, batch_features, bias,  scale):
     return example_list
 
 def readBatchBagMIL(example_filepath, batch_features, bias,  scale):
-    print example_filepath
     if not os.path.exists(example_filepath):
         print "%s not found"%example_filepath
         raise IOError
     else:
         example_list=[]
         print ' '.join(["reading bag:",example_filepath])
+        c=0
         with open(example_filepath) as ef:
             for example in ef:
+                c+=1
+                print c
                 example_list.append(readBatchFeatureExample(example.strip(), batch_features, bias, scale))
     return example_list
 
