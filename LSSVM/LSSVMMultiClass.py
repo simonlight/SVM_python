@@ -252,7 +252,7 @@ def main():
                 # save memory
                 train_batch_features = json.load(open(os.path.join(trainval_single_json_folder,str(scale)+".json")))
     
-                example_train, example_test = generate_examples(category, scale, example_root_folder, train_batch_features)
+                example_train, example_test = generate_examples(category, scale, example_root_folder, train_batch_features,exp_type)
                                
                                         
                 for epsilon in epsilonCV:
