@@ -249,7 +249,7 @@ def main():
     split=1
     # save memory
     with open(os.path.join(trainval_single_json_folder,str(scale)+".json")) as train_batch_feature_file:
-        train_batch_features = json.load(train_batch_feature_file)
+        train_batch_features = ijson.parser(train_batch_feature_file)
 
     example_train, example_test = generate_examples(category, scale, example_root_folder, train_batch_features,exp_type)
     del train_batch_features
