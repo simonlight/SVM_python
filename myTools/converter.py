@@ -40,8 +40,8 @@ def jsonGazeCategoryIndependent(txt_feature_folder, json_feature_folder, scales)
             if cnt % 1000 == 0:
                 print "scale: %d, %d / %d finished"%(scale, cnt, total_file_num)
             scale_feature[scale][filename]=getJsonFeature(scale, filename, feature_root_folder)
-        with open(os.path.join(json_feature_folder, 'ETLoss+_'+str(scale)+'.json'),'w') as json_feature_file:
-            json.dump(scale_feature, json_feature_file)
+#         with open(os.path.join(json_feature_folder, 'ETLoss+_'+str(scale)+'.json'),'w') as json_feature_file:
+#             json.dump(scale_feature, json_feature_file)
 
             
 def jsonGazeCategoryDependent(txt_feature_folder, json_feature_folder, scales, categories):
@@ -94,7 +94,7 @@ def jsonFileFeatures(txt_feature_folder, json_feature_folder, scales, batch_size
             print "%d / %d finished and saved"%(cnt, len(feature_fps)-1)
         
 if __name__ == "__main__":
-    pass
-#     jsonGazeCategoryIndependent("/local/wangxin/Data/gaze_voc_actions_stefan/ETLoss_ratio", "/local/wangxin/Data/gaze_voc_actions_stefan/ETLoss_json", [90])
+    
+    jsonGazeCategoryIndependent("/local/wangxin/Data/gaze_voc_actions_stefan/ETLoss_ratio", "/local/wangxin/Data/gaze_voc_actions_stefan/ETLoss_json", [90])
 #     jsonFileFeatures("/home/wangxin/Data/full_stefan_gaze/m_2048_trainval_batch_feature", [100,90], 100)
 #     pass
