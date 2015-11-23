@@ -116,6 +116,10 @@ def combineFeatureJsonIntoOneFile(batch_feature_mainfolders,scales):
     """combine seperate jsons together, use only once!!!!"""
     for batch_feature_mainfolder in batch_feature_mainfolders:
         for scale in scales:
+            single_json_fp = os.path.join(batch_feature_mainfolder,"single_json",str(scale)+'.json')
+            if os.path.exists(single_json_fp):
+                continue
+            
             print batch_feature_mainfolder,scale
             final_json = collections.defaultdict(lambda: collections.defaultdict(lambda: None))
             batch_feature_folder = os.path.join(batch_feature_mainfolder,str(scale))
@@ -126,7 +130,7 @@ def combineFeatureJsonIntoOneFile(batch_feature_mainfolders,scales):
                     for k2, v2 in v.items():
                         final_json[k][k2] = v2
             
-            json.dump(final_json,open(os.path.join(batch_feature_mainfolder,"single_json",str(scale)+'.json'),'w'))
+            json.dump(final_json,open(single_json_fp, 'w'))
 
 def combineFeatureJson(batch_feature_folder):
     """combine seperate jsons together, use only once!!!!"""
