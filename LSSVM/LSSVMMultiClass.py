@@ -273,7 +273,7 @@ def main():
                 pickle_example(trainval_single_json_folder, scale, category, example_root_folder, exp_type, sourceDir, serialized_example_folder)
 #                 example_train = pickle.load(open(example_train_path))
 #                 example_test = pickle.load(open(example_val_path))
-#      
+#       
 #                 for epsilon in epsilonCV:
 #                     for lbd in lambdaCV:
 #                         for tradeoff in tradeoffCV:
@@ -283,7 +283,7 @@ def main():
 #                                                 optim, epochsLatentMax, epochsLatentMin,\
 #                                                 cpmax, cpmin, split,exp_type,\
 #                                                 load_classifier, example_train, gazeType, lossPath, save_classifier)
-#                                  
+#                                   
 #                             evaluation_phase(lssvm, example_train, example_test, result_file_fp)
 #                                                        
                                     
