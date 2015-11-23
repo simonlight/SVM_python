@@ -10,7 +10,7 @@ from DataType import BagMIL
 from DataType import TrainingSample
 from myTools import vector
 import collections
-from myTools import converter
+import converter
 
 
 
