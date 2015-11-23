@@ -187,9 +187,9 @@ def train_phase(resDir, classifier_folder,\
 def main():
     
     # big    stefan
-#     sourceDir = "/home/wangxin/Data/full_stefan_gaze/"
-#     resDir = "/home/wangxin/results/full_stefan_gaze/std_et/"
-#     gazeType = "stefan"
+    sourceDir = "/home/wangxin/Data/full_stefan_gaze/"
+    resDir = "/home/wangxin/results/full_stefan_gaze/std_et/"
+    gazeType = "stefan"
     
     # local stefan
 #     sourceDir = "/local/wangxin/Data/gaze_voc_actions_stefan/"
@@ -197,9 +197,9 @@ def main():
 #     gazeType = "stefan"
 
     # big ferrari
-    sourceDir = "/home/wangxin/Data/ferrari_gaze/"
-    resDir = "/home/wangxin/results/ferrari_gaze/std_et/"
-    gazeType = "ferrari"
+#     sourceDir = "/home/wangxin/Data/ferrari_gaze/"
+#     resDir = "/home/wangxin/results/ferrari_gaze/std_et/"
+#     gazeType = "ferrari"
          
 #     local ferrari
 #     sourceDir = "/local/wangxin/Data/ferrari_gaze/";
@@ -269,23 +269,25 @@ def main():
                 example_train_path = os.path.join(sourceDir, serialized_example_folder, str(scale), category+"_train.examples")
                 example_val_path = os.path.join(sourceDir, serialized_example_folder, str(scale), category+"_val_val.examples")
                 example_test_path = os.path.join(sourceDir, serialized_example_folder, str(scale), category+"_val_test.examples")
+#                 if os.path.exists(example_train_path) and os.path.exists(example_val_path) and os.path.exists(example_test_path):
+#                     continue
                 
-#                 pickle_example(trainval_single_json_folder, scale, category, example_root_folder, exp_type, sourceDir, serialized_example_folder)
-                example_train = pickle.load(open(example_train_path))
-                example_test = pickle.load(open(example_val_path))
-       
-                for epsilon in epsilonCV:
-                    for lbd in lambdaCV:
-                        for tradeoff in tradeoffCV:
-                            lssvm = train_phase(resDir, classifier_folder,\
-                                                category, scale, lbd, epsilon, tradeoff,\
-                                                initializedType, hnorm, numWords,\
-                                                optim, epochsLatentMax, epochsLatentMin,\
-                                                cpmax, cpmin, split,exp_type,\
-                                                load_classifier, example_train, gazeType, lossPath, save_classifier)
-                                   
-                            evaluation_phase(lssvm, example_train, example_test, result_file_fp)
-#                                                        
+                pickle_example(trainval_single_json_folder, scale, category, example_root_folder, exp_type, sourceDir, serialized_example_folder)
+#                 example_train = pickle.load(open(example_train_path))
+#                 example_test = pickle.load(open(example_val_path))
+#        
+#                 for epsilon in epsilonCV:
+#                     for lbd in lambdaCV:
+#                         for tradeoff in tradeoffCV:
+#                             lssvm = train_phase(resDir, classifier_folder,\
+#                                                 category, scale, lbd, epsilon, tradeoff,\
+#                                                 initializedType, hnorm, numWords,\
+#                                                 optim, epochsLatentMax, epochsLatentMin,\
+#                                                 cpmax, cpmin, split,exp_type,\
+#                                                 load_classifier, example_train, gazeType, lossPath, save_classifier)
+#                                    
+#                             evaluation_phase(lssvm, example_train, example_test, result_file_fp)
+# #                                                        
                                     
                                         
 if __name__ == "__main__":

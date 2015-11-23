@@ -117,8 +117,6 @@ def combineFeatureJsonIntoOneFile(batch_feature_mainfolders,scales):
     for batch_feature_mainfolder in batch_feature_mainfolders:
         for scale in scales:
             single_json_fp = os.path.join(batch_feature_mainfolder,"single_json",str(scale)+'.json')
-            if os.path.exists(single_json_fp):
-                continue
             
             print batch_feature_mainfolder,scale
             final_json = collections.defaultdict(lambda: collections.defaultdict(lambda: None))
