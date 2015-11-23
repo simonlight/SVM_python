@@ -101,6 +101,7 @@ def readBatchBagMILijson(example_filepath, batch_features, bias,  scale):
 
 def readBatchBagMIL(example_filepath, batch_features, bias,  scale):
     if not os.path.exists(example_filepath):
+        
         print "%s not found"%example_filepath
         raise IOError
     else:
