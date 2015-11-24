@@ -2,15 +2,15 @@
 #cls_arr=("dog" "cat" "motorbike" "boat" "aeroplane" "horse" "cow" "sofa" "diningtable" "bicycle")
 #cls_arr=("dog" "cat" "motorbike" "boat" "aeroplane")
 #cls_arr=("cow" "sofa" "diningtable" "bicycle")
-cls_arr=("jumping" "phoning" "playinginstrument" "reading" "ridingbike" "ridinghorse" "running" "takingphoto" "usingcomputer" "walking")
+#cls_arr=("jumping" "phoning" "playinginstrument" "reading" "ridingbike" "ridinghorse" "running" "takingphoto" "usingcomputer" "walking")
 #cls_arr=("jumping" "phoning" "playinginstrument" "reading" "ridingbike")
 #cls_arr=("ridinghorse" "running" "takingphoto" "usingcomputer" "walking")
 #cls_arr=("takingphoto" "usingcomputer" "walking")
-scale_arr=("90" "80" "70" "60" "50")
+#scale_arr=("90" "80" "70" "60" "50")
 #cls_arr=("phoning")
-#cls_arr=("horse")
+cls_arr=("cat")
 
-#scale_arr=("50")
+scale_arr=("40")
 k='oarsub -p "host='"'"'big$1'"'"' " -l "nodes=1/core=3,walltime=500:0:0" --notify "mail:xin.wang@lip6.fr" "python -u /home/wangxin/code/SVM_python/LSSVM/LSSVMMultiClass.py'
 
 end='"'
