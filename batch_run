@@ -10,7 +10,7 @@
 #cls_arr=("phoning")
 cls_arr=("dog")
 
-scale_arr=("40")
+scale_arr=("80")
 k='oarsub -p "host='"'"'big$1'"'"' " -l "nodes=1/core=3,walltime=500:0:0" --notify "mail:xin.wang@lip6.fr" "python -u /home/wangxin/code/SVM_python/LSSVM/LSSVMMultiClass.py'
 
 
