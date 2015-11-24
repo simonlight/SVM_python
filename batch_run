@@ -8,9 +8,9 @@
 #cls_arr=("takingphoto" "usingcomputer" "walking")
 #scale_arr=("90" "80" "70" "60" "50")
 #cls_arr=("phoning")
-cls_arr=("cat")
+cls_arr=("dog")
 
-scale_arr=("90")
+scale_arr=("40")
 k='oarsub -p "host='"'"'big$1'"'"' " -l "nodes=1/core=3,walltime=500:0:0" --notify "mail:xin.wang@lip6.fr" "python -u /home/wangxin/code/SVM_python/LSSVM/LSSVMMultiClass.py'
 
 

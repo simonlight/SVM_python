@@ -241,7 +241,7 @@ def main():
     categories = [sys.argv[1]]
 #     scaleCV = [90]    
     scaleCV = [int(sys.argv[2])]    
-    tradeoffCV = [0.4]
+    tradeoffCV = [0.3]
 #     tradeoffCV = [float(sys.argv[3])]
 #     tradeoffCV = [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
     initializedType = "noInit"
