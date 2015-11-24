@@ -221,7 +221,7 @@ def main():
     trainval_single_json_folder = os.path.join(sourceDir, "m_2048_trainval_batch_feature","single_json")
     test_single_json_folder = os.path.join(sourceDir, "m_2048_test_batch_feature","single_json")
     
-    exp_description = "cv_fulltrain_halfval"
+    exp_description = "40 problem checked in 90"
     result_file_fp = os.path.join(resDir,exp_description, "ap_summary.txt")
     detection_folder= os.path.join(resDir,exp_description,"metric")
     myIO.basic.check_folder(detection_folder)
@@ -241,9 +241,9 @@ def main():
     categories = [sys.argv[1]]
 #     scaleCV = [90]    
     scaleCV = [int(sys.argv[2])]    
-#     tradeoffCV = [0.1]
+    tradeoffCV = [0.4]
 #     tradeoffCV = [float(sys.argv[3])]
-    tradeoffCV = [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
+#     tradeoffCV = [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
     initializedType = "noInit"
     hnorm = False;
     
@@ -255,8 +255,8 @@ def main():
     cpmin = 2;
     splitCV = [1];
     
-    load_classifier = True
-    save_classifier = True
+    load_classifier = False
+    save_classifier = False
     
     print_exp_detail(categories, lambdaCV, epsilonCV, scaleCV, tradeoffCV,\
                      initializedType, hnorm, numWords,\
